@@ -1,1065 +1,0 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>VAAKYAM â Free English Coach</title>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0B0F1E;--card:#141A2E;--card2:#1C2340;--border:#252D4A;
-  --text:#E5EBF8;--muted:#6B7A99;--accent:#4B7BFF;--adim:rgba(75,123,255,.14);
-  --ok:#00C07F;--err:#FF4D4D;--warn:#FFB347;--edim:rgba(255,77,77,.13);
-  --ok2:rgba(0,192,127,.13);
-}
-html,body{height:100%;background:var(--bg);color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  -webkit-text-size-adjust:100%}
-
-/* âââ WELCOME âââââââââââââââââââââââââââââââââââââââââââ */
-#sw{min-height:100vh;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:24px;overflow-y:auto}
-.wlogo{font-size:42px;font-weight:900;letter-spacing:4px;margin-bottom:4px;text-align:center}
-.wlogo span{color:var(--accent)}
-.wsub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:8px}
-.wtag{font-size:11px;color:var(--ok);text-align:center;margin-bottom:32px;
-  background:var(--ok2);border:1px solid rgba(0,192,127,.25);
-  display:inline-block;padding:4px 14px;border-radius:20px}
-.wcard{width:100%;max-width:420px;background:var(--card);
-  border:1px solid var(--border);border-radius:20px;padding:24px}
-.wlbl{font-size:11px;font-weight:700;text-transform:uppercase;
-  letter-spacing:1px;color:var(--muted);margin-bottom:8px}
-.wname{width:100%;height:50px;padding:0 16px;background:var(--card2);
-  border:1px solid var(--border);border-radius:12px;color:var(--text);
-  font-size:16px;outline:none;margin-bottom:20px;-webkit-appearance:none}
-.wname:focus{border-color:var(--accent)}
-.wname::placeholder{color:var(--muted)}
-.goals{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
-.gbtn{flex:1;min-width:100px;padding:12px 8px;background:var(--card2);
-  border:1px solid var(--border);border-radius:12px;color:var(--muted);
-  font-size:12px;font-weight:600;cursor:pointer;text-align:center;
-  transition:all .15s;-webkit-tap-highlight-color:transparent}
-.gbtn.sel{border-color:var(--accent);color:var(--accent);background:var(--adim)}
-.wstart{width:100%;height:52px;background:var(--accent);border:none;
-  border-radius:14px;color:#fff;font-size:16px;font-weight:700;
-  cursor:pointer;letter-spacing:.3px;-webkit-tap-highlight-color:transparent}
-.wstart:disabled{opacity:.35;cursor:not-allowed}
-.wfree{font-size:11px;color:var(--muted);text-align:center;margin-top:14px}
-.wfree span{color:var(--ok)}
-
-/* âââ SESSION ââââââââââââââââââââââââââââââââââââââââââââ */
-#ss{display:none;min-height:100vh;flex-direction:column;background:var(--bg)}
-#ss.on{display:flex}
-.shdr{background:var(--card);border-bottom:1px solid var(--border);
-  padding:12px 16px;display:flex;align-items:center;
-  justify-content:space-between;flex-shrink:0}
-.sname{font-size:14px;font-weight:700}
-.sname span{color:var(--accent)}
-.sprog{font-size:11px;color:var(--muted);margin-top:2px}
-.sscore-wrap{display:flex;gap:14px}
-.sscore{text-align:center}
-.sscore-val{font-size:15px;font-weight:700;color:var(--muted)}
-.sscore-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
-.smain{flex:1;overflow-y:auto;padding:14px;display:flex;
-  flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
-
-/* Question card */
-.qcard{background:var(--card);border:1px solid var(--border);
-  border-radius:16px;padding:16px}
-.qlbl{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;
-  letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.qlbl::before{content:'';width:6px;height:6px;border-radius:50%;
-  background:var(--accent);display:block}
-.qtxt{font-size:17px;font-weight:500;line-height:1.6;color:var(--text)}
-
-/* Answer bubble */
-.abubble{background:#152040;border:1px solid #1E3060;
-  border-radius:14px 4px 14px 14px;padding:10px 14px;
-  font-size:14px;line-height:1.6;color:#9EC4FF;align-self:flex-end;
-  max-width:90%;animation:fadeUp .2s ease-out}
-
-/* Correction card */
-.ccard{background:var(--card);border:1px solid var(--border);
-  border-radius:16px;padding:14px;animation:fadeUp .2s ease-out}
-.ccard-title{font-size:10px;font-weight:700;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
-.cerr-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:5px}
-.cerr-x{color:var(--err);font-size:14px;flex-shrink:0;margin-top:1px}
-.cerr-txt{font-size:14px;color:var(--muted);text-decoration:line-through;line-height:1.5}
-.cok-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
-.cok-x{color:var(--ok);font-size:14px;flex-shrink:0;margin-top:1px}
-.cok-txt{font-size:14px;color:var(--ok);font-weight:600;line-height:1.5}
-.crule{font-size:12px;color:var(--muted);background:var(--card2);
-  border-radius:8px;padding:8px 10px;border-left:2px solid var(--accent);
-  line-height:1.55;margin-bottom:8px}
-.crule strong{color:var(--accent)}
-.cvocab{font-size:12px;color:var(--warn);padding:6px 10px;
-  background:rgba(255,179,71,.1);border-radius:8px;
-  border-left:2px solid var(--warn);line-height:1.5}
-.cvocab strong{color:var(--warn)}
-.cspeak-btn{width:100%;height:40px;background:var(--adim);
-  border:1px solid var(--accent);border-radius:10px;color:var(--accent);
-  font-size:13px;font-weight:600;cursor:pointer;margin-top:10px;
-  -webkit-tap-highlight-color:transparent}
-
-/* No error card */
-.noerr{background:var(--ok2);border:1px solid rgba(0,192,127,.3);
-  border-radius:16px;padding:14px;text-align:center;animation:fadeUp .2s ease-out}
-.noerr-ico{font-size:28px;margin-bottom:6px}
-.noerr-txt{font-size:14px;color:var(--ok);font-weight:600}
-.noerr-sub{font-size:12px;color:var(--muted);margin-top:4px}
-
-/* Input area */
-.sinput{background:var(--card);border-top:1px solid var(--border);
-  padding:10px 14px env(safe-area-inset-bottom,12px);flex-shrink:0}
-.sstat{display:flex;align-items:center;justify-content:center;
-  gap:10px;margin-bottom:10px}
-.bars{display:flex;gap:3px;align-items:center;height:22px}
-.bar{width:3px;height:5px;border-radius:2px;background:var(--accent)}
-.bar.on{animation:barP .65s ease-in-out infinite}
-.bar.on:nth-child(2){animation-delay:.1s}.bar.on:nth-child(3){animation-delay:.2s}
-.bar.on:nth-child(4){animation-delay:.3s}.bar.on:nth-child(5){animation-delay:.2s}
-.bar.on:nth-child(6){animation-delay:.1s}
-.statlbl{font-size:12px;color:var(--muted)}
-.btnrow{display:flex;gap:10px}
-.micbtn{flex:1;height:54px;background:var(--adim);border:1px solid var(--accent);
-  border-radius:14px;color:var(--accent);font-size:15px;font-weight:700;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
-  transition:all .15s;-webkit-tap-highlight-color:transparent;letter-spacing:.2px}
-.micbtn:active{transform:scale(.97)}
-.micbtn.lstn{border-color:var(--err);color:var(--err);background:var(--edim)}
-.micbtn:disabled{opacity:.4;cursor:not-allowed}
-.kbbtn{width:54px;height:54px;background:transparent;border:1px solid var(--border);
-  border-radius:14px;color:var(--muted);font-size:22px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  -webkit-tap-highlight-color:transparent}
-.nxtbtn{flex:1;height:54px;background:var(--ok2);border:1px solid rgba(0,192,127,.4);
-  border-radius:14px;color:var(--ok);font-size:15px;font-weight:700;
-  cursor:pointer;-webkit-tap-highlight-color:transparent}
-.trow{display:flex;gap:8px}
-.tinput{flex:1;height:48px;padding:0 14px;background:var(--card2);
-  border:1px solid var(--border);border-radius:12px;color:var(--text);
-  font-size:14px;outline:none;-webkit-appearance:none}
-.tinput:focus{border-color:var(--accent)}
-.sendbtn{width:48px;height:48px;background:var(--accent);border:none;
-  border-radius:12px;color:#fff;font-size:20px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center}
-
-/* âââ REPORT ââââââââââââââââââââââââââââââââââââââââââââââ */
-#sr{display:none;min-height:100vh;flex-direction:column;align-items:center;
-  padding:24px;background:var(--bg);overflow-y:auto}
-#sr.on{display:flex}
-.rlogo{font-size:22px;font-weight:900;letter-spacing:3px;margin-bottom:4px;color:var(--text)}
-.rlogo span{color:var(--accent)}
-.rname{font-size:13px;color:var(--muted);margin-bottom:24px}
-.rscore-circle{width:120px;height:120px;border-radius:50%;
-  border:4px solid var(--ok);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;margin-bottom:24px;
-  background:var(--ok2)}
-.rscore-num{font-size:36px;font-weight:900;color:var(--ok)}
-.rscore-lbl{font-size:11px;color:var(--ok);text-transform:uppercase;letter-spacing:.5px}
-.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;
-  width:100%;max-width:420px;margin-bottom:20px}
-.rstat{background:var(--card);border:1px solid var(--border);
-  border-radius:14px;padding:14px;text-align:center}
-.rstat-val{font-size:24px;font-weight:800;color:var(--accent)}
-.rstat-lbl{font-size:11px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
-.rbreakdown{width:100%;max-width:420px;background:var(--card);
-  border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px}
-.rbtitle{font-size:12px;font-weight:700;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
-.rberr{display:flex;align-items:center;justify-content:space-between;
-  padding:8px 0;border-bottom:1px solid var(--border)}
-.rberr:last-child{border-bottom:none}
-.rberr-name{font-size:13px;color:var(--text)}
-.rberr-count{font-size:13px;font-weight:700;color:var(--err)}
-.rmsg{width:100%;max-width:420px;background:var(--ok2);
-  border:1px solid rgba(0,192,127,.3);border-radius:14px;
-  padding:14px;font-size:13px;color:var(--ok);line-height:1.6;
-  margin-bottom:20px;text-align:center}
-.rbtns{display:flex;gap:10px;width:100%;max-width:420px}
-.ragain{flex:1;height:50px;background:var(--accent);border:none;
-  border-radius:14px;color:#fff;font-size:15px;font-weight:700;cursor:pointer}
-.rnew{height:50px;padding:0 20px;background:var(--card);border:1px solid var(--border);
-  border-radius:14px;color:var(--muted);font-size:14px;font-weight:600;cursor:pointer}
-
-/* âââ ERROR TOAST âââââââââââââââââââââââââââââââââââââââ */
-#toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);
-  background:#1A1030;border:1px solid #4A2080;border-radius:12px;
-  padding:10px 18px;font-size:13px;color:#CC99FF;
-  display:none;z-index:999;max-width:90%;text-align:center;
-  animation:fadeUp .2s ease-out}
-#toast.on{display:block}
-
-/* âââ ANIMATIONS ââââââââââââââââââââââââââââââââââââââââ */
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes barP{0%,100%{height:4px}50%{height:20px}}
-</style>
-</head>
-<body>
-<!-- âââ SCREEN 1: WELCOME âââââââââââââââââââââââââââââââ -->
-<div id="sw">
-  <div class="wlogo"><span>VAA</span>KYAM</div>
-  <div class="wsub">AI English Fluency Coach</div>
-  <div class="wtag">100% FREE Â· No API Key Â· No Login</div>
-  <div class="wcard">
-    <div class="wlbl">Your Name</div>
-    <input class="wname" type="text" id="wname" placeholder="Enter your first name..." maxlength="30" oninput="chkStart()">
-    <div class="wlbl">Practice Goal</div>
-    <div class="goals">
-      <button class="gbtn sel" id="g1" onclick="selGoal('conversation',this)">Daily Conversation</button>
-      <button class="gbtn" id="g2" onclick="selGoal('interview',this)">Interview Prep</button>
-      <button class="gbtn" id="g3" onclick="selGoal('fluency',this)">Fluency Building</button>
-    </div>
-    <button class="wstart" id="wstart" onclick="startSession()" disabled>Start Practice â</button>
-    <div class="wfree"><span>â Grammar</span> Â· <span>â Vocabulary</span> Â· <span>â Voice</span> Â· Zero cost</div>
-  </div>
-</div>
-
-<!-- âââ SCREEN 2: SESSION ââââââââââââââââââââââââââââââââ -->
-<div id="ss">
-  <div class="shdr">
-    <div>
-      <div class="sname">Hello, <span id="shdr-name">â</span></div>
-      <div class="sprog" id="sprog">Question 1 of 12</div>
-    </div>
-    <div class="sscore-wrap">
-      <div class="sscore"><div class="sscore-val" id="sc-g">â</div><div class="sscore-lbl">Grammar</div></div>
-      <div class="sscore"><div class="sscore-val" id="sc-q">0</div><div class="sscore-lbl">Turns</div></div>
-    </div>
-  </div>
-  <div class="smain" id="smain"></div>
-  <div class="sinput">
-    <div class="sstat">
-      <div class="bars">
-        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-      </div>
-      <span class="statlbl" id="statlbl">Tap mic to answer</span>
-    </div>
-    <div class="btnrow" id="vrow">
-      <button class="micbtn" id="micbtn" onclick="toggleMic()">
-        <span id="micico">ð¤</span><span id="miclbl">Speak Answer</span>
-      </button>
-      <button class="kbbtn" onclick="toText()" title="Type instead">â¨ï¸</button>
-    </div>
-    <div class="trow" id="trow" style="display:none">
-      <input class="tinput" id="tinput" placeholder="Type your answer here..." onkeydown="if(event.key==='Enter')submitText()">
-      <button class="sendbtn" onclick="submitText()">â¶</button>
-      <button class="kbbtn" onclick="toVoice()">ð¤</button>
-    </div>
-  </div>
-</div>
-
-<!-- âââ SCREEN 3: REPORT âââââââââââââââââââââââââââââââââ -->
-<div id="sr">
-  <div class="rlogo"><span>VAA</span>KYAM</div>
-  <div class="rname" id="rname">Great session!</div>
-  <div class="rscore-circle">
-    <div class="rscore-num" id="r-score">â</div>
-    <div class="rscore-lbl">/ 10</div>
-  </div>
-  <div class="rgrid">
-    <div class="rstat"><div class="rstat-val" id="r-turns">0</div><div class="rstat-lbl">Turns</div></div>
-    <div class="rstat"><div class="rstat-val" id="r-words">0</div><div class="rstat-lbl">Words Spoken</div></div>
-    <div class="rstat"><div class="rstat-val" id="r-errors">0</div><div class="rstat-lbl">Errors Found</div></div>
-    <div class="rstat"><div class="rstat-val" id="r-streak">0</div><div class="rstat-lbl">Day Streak</div></div>
-  </div>
-  <div class="rbreakdown">
-    <div class="rbtitle">Error Breakdown</div>
-    <div id="r-breakdown">â</div>
-  </div>
-  <div class="rmsg" id="r-msg"></div>
-  <div class="rbtns">
-    <button class="ragain" onclick="practiceAgain()">Practice Again</button>
-    <button class="rnew" onclick="newSession()">Change Name</button>
-  </div>
-</div>
-
-<div id="toast"></div>
-
-<script>
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// QUESTION BANK
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-const QB = {
-  intro: [
-    "Hello {name}! Please tell me a little about yourself.",
-    "Welcome, {name}! Please introduce yourself in a few sentences.",
-    "Great to meet you, {name}! Tell me who you are and what you do.",
-    "Hi {name}! In your own words, please describe yourself and your background.",
-    "Hello {name}! I would love to know about you. Please tell me something about yourself."
-  ],
-  profession: {
-    teacher: [
-      "What subjects do you enjoy teaching the most, {name}?",
-      "What made you choose teaching as your career, {name}?",
-      "What is the most rewarding part of being a teacher for you?",
-      "How do you keep your students motivated and engaged in class?",
-      "What changes have you seen in education over the years, {name}?"
-    ],
-    student: [
-      "What are you currently studying, {name}?",
-      "Which subject do you find most interesting and why?",
-      "What do you plan to do after your studies, {name}?",
-      "How do you manage your studies and free time?",
-      "What is the most challenging part of being a student for you?"
-    ],
-    engineer: [
-      "What kind of engineering work do you do, {name}?",
-      "What do you enjoy most about your work in technology?",
-      "How has technology changed in your field recently, {name}?",
-      "What is one project you have worked on that you are proud of?",
-      "What skills do you think are most important in your profession?"
-    ],
-    doctor: [
-      "What kind of medical work do you do, {name}?",
-      "What made you choose the medical profession?",
-      "What is the most satisfying part of your work as a doctor?",
-      "How do you balance the demands of your profession with personal life?",
-      "What advice would you give to someone wanting to enter the medical field?"
-    ],
-    general: [
-      "How long have you been in your current role, {name}?",
-      "What do you enjoy most about your work?",
-      "What is the biggest challenge in your profession, {name}?",
-      "How did you choose your current career path?",
-      "What skill has helped you the most in your professional life?"
-    ]
-  },
-  hobbies: [
-    "What do you enjoy doing in your free time, {name}?",
-    "Do you have any hobbies or interests outside of work?",
-    "What kind of music do you enjoy listening to, {name}?",
-    "Are you a sports person? Do you enjoy any particular sport or game?",
-    "Do you enjoy travelling? Tell me about a place you enjoyed visiting.",
-    "What is your favourite type of food or cuisine, {name}?",
-    "Do you enjoy cooking? What do you like to cook?",
-    "Do you enjoy reading books? What kind of books do you prefer?",
-    "Do you watch movies or web series? What genre do you enjoy most?",
-    "Do you enjoy spending time outdoors or do you prefer staying indoors?",
-    "Is there any creative hobby you have â like painting, photography, or writing?",
-    "Do you enjoy listening to podcasts or watching educational videos, {name}?",
-    "Do you have any fitness routine â like yoga, walking, or going to the gym?",
-    "What is one hobby you have always wanted to try but have not yet?",
-    "How do you usually spend your weekends, {name}?"
-  ],
-  weather: [
-    "How do you feel about the weather these days, {name}? Do you prefer hot summers or cool winters?",
-    "Which season do you enjoy the most and why, {name}?",
-    "How does the weather in your area affect your daily routine?",
-    "Do you prefer rainy days or sunny days? Tell me why.",
-    "Does the weather affect your mood? How do you deal with extreme heat or cold?"
-  ],
-  current: [
-    "What is one thing happening in the world today that you find interesting, {name}?",
-    "Do you follow the news regularly? What topics interest you the most?",
-    "What changes in technology do you think are most exciting right now?",
-    "What do you think is the most important issue facing India today?",
-    "How do you think artificial intelligence will change education in India?"
-  ],
-  lifestyle: [
-    "How do you like to start your day, {name}? Do you have a morning routine?",
-    "Are you an early bird or a night owl, {name}?",
-    "How do you manage stress in your daily life?",
-    "What is one habit you have that you are proud of?",
-    "How important is spending time with family to you, {name}?",
-    "What does a perfect evening look like for you?",
-    "How do you maintain a balance between work and personal life, {name}?",
-    "What is something small that makes you happy every day?"
-  ],
-  motivation: [
-    "What motivates you to keep going every day, {name}?",
-    "Who is your biggest inspiration in life and why?",
-    "What is one goal you are working towards this year, {name}?",
-    "What is one skill you want to improve in the next six months?",
-    "What does success mean to you personally?",
-    "What is one challenge you have overcome that you are proud of, {name}?",
-    "If you could give one piece of advice to your younger self, what would it be?",
-    "What keeps you positive and energized during difficult times, {name}?",
-    "What is one thing on your bucket list â something you really want to do someday?",
-    "How do you celebrate your achievements, big or small?"
-  ],
-  opinion: [
-    "Do you believe hard work or smart work is more important, {name}? Why?",
-    "How do you think English education can be improved in India?",
-    "Do you prefer working alone or as part of a team? Why?",
-    "What role does friendship play in your life, {name}?",
-    "Do you think it is important to keep learning even after formal education ends?",
-    "What quality do you admire most in a person, {name}?",
-    "What is one thing you wish more people understood about your profession?",
-    "If you had one wish for your community, what would it be, {name}?"
-  ]
-};
-
-// Profession-specific follow-up triggers
-const KEYWORD_FOLLOWUP = {
-  music:    "You mentioned music. What kind of music do you enjoy performing or listening to the most?",
-  sing:     "You mentioned singing. How long have you been singing? Do you perform for others?",
-  guitar:   "You mentioned guitar. How long have you been playing? What style of music do you play?",
-  cricket:  "You mentioned cricket. Do you play or watch it? Who is your favourite player?",
-  yoga:     "You mentioned yoga. How long have you been practicing? How has it helped you?",
-  gym:      "You mentioned the gym. What is your typical workout routine like?",
-  reading:  "You mentioned reading. What was the last book you read that you really enjoyed?",
-  cooking:  "You mentioned cooking. What is your favourite dish to prepare?",
-  travel:   "You mentioned travelling. Which destination would you most like to visit next?",
-  painting: "You mentioned painting. What kind of art do you create â portraits, landscapes?",
-  garden:   "You mentioned gardening. What do you enjoy growing most?"
-};
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// INDIAN ENGLISH CUSTOM RULES
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-const INDIAN_RULES = [
-  {re:/\bmyself\s+(is|am|are|was)\b/gi,     msg:'Say "My name is" â not "Myself is".',            fix:'My name is'},
-  {re:/\bhimself\s+(is|am)\b/gi,            msg:'Say "His name is" â not "Himself is".',           fix:'His name is'},
-  {re:/\bherself\s+(is|am)\b/gi,            msg:'Say "Her name is" â not "Herself is".',           fix:'Her name is'},
-  {re:/\bdo the needful\b/gi,               msg:'"Do the needful" is Indian English. Say "do what is necessary".',fix:'do what is necessary'},
-  {re:/\bprepone\b/gi,                      msg:'"Prepone" is not standard. Say "reschedule to an earlier time".',fix:'reschedule to an earlier time'},
-  {re:/\bcousin (brother|sister)\b/gi,      msg:'Just say "cousin" â do not add brother or sister.',fix:'cousin'},
-  {re:/\bi (am|was) having (hunger|thirst)\b/gi,msg:'Say "I am hungry" / "I am thirsty" â not "having hunger".',fix:''},
-  {re:/\brevert back\b/gi,                  msg:'"Revert" already means going back. Just say "revert".',fix:'revert'},
-  {re:/\btoday morning\b/gi,                msg:'Say "this morning" â not "today morning".',       fix:'this morning'},
-  {re:/\btoday evening\b/gi,                msg:'Say "this evening" â not "today evening".',       fix:'this evening'},
-  {re:/\btoday night\b/gi,                  msg:'Say "tonight" or "last night" â not "today night".',fix:'tonight'},
-  {re:/\bpassed out (from|of)\b/gi,         msg:'Say "graduated from" â not "passed out from".',   fix:'graduated from'},
-  {re:/\bwhat is your good name\b/gi,       msg:'Just say "What is your name?" â "good name" is not needed.',fix:'What is your name?'},
-  {re:/\bI am (very )?much interested\b/gi, msg:'Say "I am very interested" â not "much interested".',fix:'I am very interested'},
-  {re:/\bkindly do the needful\b/gi,        msg:'Say "please do what is required" instead.',       fix:'please do what is required'},
-  {re:/\bstay back\b/gi,                    msg:'Say "stay" or "remain" â not "stay back".',       fix:'stay'},
-  {re:/\bI will revert\b/gi,                msg:'"Revert" is misused here. Say "I will get back to you".',fix:'I will get back to you'},
-  {re:/\bair dash\b/gi,                     msg:'Say "fly" or "travel by air" â not "air dash".',  fix:'travel by air'},
-  {re:/\bI have done (my )?schooling\b/gi,  msg:'Say "I completed my schooling" â not "done schooling".',fix:'I completed my schooling'},
-  {re:/\bwent to abroad\b/gi,               msg:'Say "went abroad" â no "to" before abroad.',      fix:'went abroad'},
-];
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// STATE
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-let S = {
-  name:'', goal:'conversation', questions:[], qIdx:0,
-  utterances:[], totalWords:0, totalErrors:0,
-  errorTypes:{}, profession:'general', detectedKeywords:[],
-  grammarScores:[], streak:0, listening:false, processing:false
-};
-let recObj = null;
-let currentTranscript = '';
-let isUserStopped = false;
-let restartCount = 0;
-const MAX_RESTARTS = 12;
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// SETUP
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function chkStart(){
-  const v = document.getElementById('wname').value.trim();
-  document.getElementById('wstart').disabled = v.length < 2;
-}
-
-function selGoal(g, btn){
-  S.goal = g;
-  document.querySelectorAll('.gbtn').forEach(b => b.classList.remove('sel'));
-  btn.classList.add('sel');
-}
-
-function startSession(){
-  const nm = document.getElementById('wname').value.trim();
-  if(!nm) return;
-  S.name = nm.charAt(0).toUpperCase() + nm.slice(1);
-  S.questions = buildQuestions();
-  S.qIdx = 0; S.utterances = []; S.totalWords = 0;
-  S.totalErrors = 0; S.errorTypes = {}; S.grammarScores = [];
-  S.detectedKeywords = []; S.profession = 'general';
-
-  document.getElementById('sw').style.display = 'none';
-  document.getElementById('ss').classList.add('on');
-  document.getElementById('shdr-name').textContent = S.name;
-
-  loadStreak();
-  renderQuestion();
-}
-
-function buildQuestions(){
-  const pick = (arr, n) => {
-    const sh = [...arr].sort(()=>Math.random()-.5);
-    return sh.slice(0, Math.min(n, sh.length));
-  };
-  const qs = [];
-  // 1 intro
-  qs.push(pick(QB.intro, 1)[0]);
-  // 2 profession questions (will be swapped after first answer)
-  qs.push('__PROF1__');
-  qs.push('__PROF2__');
-  // 2 hobby questions
-  pick(QB.hobbies, 2).forEach(q => qs.push(q));
-  // 1 keyword follow-up slot
-  qs.push('__KW__');
-  // 1 weather
-  qs.push(pick(QB.weather, 1)[0]);
-  // 1 current event
-  qs.push(pick(QB.current, 1)[0]);
-  // 2 lifestyle
-  pick(QB.lifestyle, 2).forEach(q => qs.push(q));
-  // 2 motivation
-  pick(QB.motivation, 2).forEach(q => qs.push(q));
-  // 1 opinion
-  qs.push(pick(QB.opinion, 1)[0]);
-  return qs;
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// QUESTION FLOW
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function renderQuestion(){
-  const total = S.questions.length;
-  const idx = S.qIdx;
-  if(idx >= total){ endSession(); return; }
-
-  let q = resolveQuestion(S.questions[idx]);
-  // substitute name
-  q = q.replace(/\{name\}/g, S.name);
-
-  document.getElementById('sprog').textContent = `Question ${idx+1} of ${total}`;
-  document.getElementById('sc-q').textContent = S.utterances.length;
-  updateGrammarScore();
-
-  const main = document.getElementById('smain');
-  main.innerHTML = '';
-
-  const qcard = document.createElement('div');
-  qcard.className = 'qcard';
-  qcard.innerHTML = `<div class="qlbl">Vaakyam asks</div><div class="qtxt">${esc(q)}</div>`;
-  main.appendChild(qcard);
-  main.scrollTop = main.scrollHeight;
-
-  setVoiceMode();
-  // Disable mic while question is being spoken â Android audio
-  // hardware must fully release speaker before mic can open.
-  speakQuestion(q);
-}
-
-function resolveQuestion(q){
-  if(q === '__PROF1__'){
-    const pool = QB.profession[S.profession] || QB.profession.general;
-    return pool[0] || QB.profession.general[0];
-  }
-  if(q === '__PROF2__'){
-    const pool = QB.profession[S.profession] || QB.profession.general;
-    return pool[1] || QB.profession.general[1];
-  }
-  if(q === '__KW__'){
-    for(const kw of S.detectedKeywords){
-      if(KEYWORD_FOLLOWUP[kw]) return KEYWORD_FOLLOWUP[kw].replace(/\{name\}/g, S.name);
-    }
-    // fallback to random lifestyle question
-    const fb = QB.lifestyle[Math.floor(Math.random()*QB.lifestyle.length)];
-    return fb;
-  }
-  return q;
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// STT
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function toggleMic(){
-  if(S.listening){ stopRec(); return; }
-  if(S.processing) return;
-  startRec();
-}
-
-function startRec(){
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SR){ showToast('Voice not supported. Please type your answer.'); toText(); return; }
-  // TTS is already finished (mic button was disabled during TTS).
-  // Small delay only as safety buffer for audio hardware release.
-  window.speechSynthesis && window.speechSynthesis.cancel();
-  currentTranscript = '';
-  isUserStopped = false;
-  restartCount = 0;
-  S.listening = true;
-  setStat('listen', 'Starting micâ¦');
-  setListenMode();
-  setTimeout(startRecInstance, 120);
-}
-
-// Restart-loop: continuous=false (reliable on Android).
-// onend auto-restarts until user presses Stop.
-function startRecInstance(){
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if(!SR || isUserStopped || !S.listening) return;
-
-  if(restartCount >= MAX_RESTARTS){
-    // Too many empty cycles â mic likely not capturing audio
-    S.listening = false;
-    showToast('No voice captured. Tap â¨ï¸ to type your answer.');
-    setStat('idle','Tap mic to answer');
-    setVoiceMode();
-    toText();
-    return;
-  }
-
-  const r = new SR();
-  r.lang = 'en-IN'; r.continuous = false; r.interimResults = true; r.maxAlternatives = 1;
-  let gotResult = false;
-
-  r.onresult = (e) => {
-    gotResult = true;
-    restartCount = 0; // reset counter on successful capture
-    let finals = '', interim = '';
-    for(let i = e.resultIndex; i < e.results.length; i++){
-      if(e.results[i].isFinal) finals += e.results[i][0].transcript + ' ';
-      else interim += e.results[i][0].transcript;
-    }
-    if(finals) currentTranscript += finals;
-    const display = (currentTranscript + interim).trim();
-    setStat('listen', display
-      ? (display.length > 72 ? 'â¦' + display.slice(-70) : display)
-      : 'Listeningâ¦ press â¹ Stop when done');
-  };
-
-  r.onerror = (e) => {
-    if(e.error === 'no-speech' || e.error === 'aborted') return; // onend will handle restart
-    if(e.error === 'not-allowed' || e.error === 'service-not-allowed'){
-      isUserStopped = true; S.listening = false;
-      showToast('Microphone blocked. Tap â¨ï¸ to type your answer.');
-      setStat('idle','Tap mic to answer'); setVoiceMode(); toText();
-    }
-    // network/other: let onend restart
-  };
-
-  r.onend = () => {
-    if(isUserStopped || !S.listening){
-      // User pressed Stop â process what we have
-      S.listening = false;
-      const full = currentTranscript.trim();
-      currentTranscript = ''; restartCount = 0;
-      if(full && !S.processing){
-        handleUtterance(full);
-      } else if(!S.processing){
-        if(!full) showToast('Nothing captured â please try again or tap â¨ï¸ to type.');
-        setStat('idle','Tap mic to answer'); setVoiceMode();
-      }
-    } else {
-      // Auto-ended (Android pauses between sentences) â restart
-      restartCount++;
-      setStat('listen', currentTranscript.trim()
-        ? (currentTranscript.length > 60 ? 'â¦' + currentTranscript.slice(-58) : currentTranscript.trim())
-        : 'Listeningâ¦ press â¹ Stop when done');
-      // Longer delay when nothing came in (audio channel may still be warming up)
-      setTimeout(startRecInstance, gotResult ? 150 : 350);
-    }
-  };
-
-  recObj = r;
-  try{ r.start(); }catch(e){
-    showToast('Could not start mic. Please type.');
-    S.listening = false; toText();
-  }
-}
-
-function stopRec(){
-  isUserStopped = true;
-  S.listening = false;
-  recObj && recObj.stop();
-}
-
-function submitText(){
-  const v = document.getElementById('tinput').value.trim();
-  if(!v || S.processing) return;
-  document.getElementById('tinput').value = '';
-  handleUtterance(v);
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// CORE: PROCESS UTTERANCE
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-async function handleUtterance(raw){
-  if(!raw.trim()) return;
-  S.processing = true;
-  setStat('proc','Checking your English...');
-  setDisabledMode();
-
-  // Show user answer bubble
-  showAnswerBubble(raw);
-
-  // Detect profession & keywords from this answer
-  detectProfession(raw);
-  detectKeywords(raw);
-
-  // Check short answers
-  const wordCount = raw.trim().split(/\s+/).length;
-  S.totalWords += wordCount;
-
-  // Apply Indian rules first
-  const indianIssues = applyIndianRules(raw);
-
-  // Call LanguageTool
-  let ltMatches = [];
-  try{ ltMatches = await checkLanguageTool(raw); }
-  catch(e){ /* LanguageTool offline â use Indian rules only */ }
-
-  // Score
-  const totalErrCount = indianIssues.length + ltMatches.length;
-  const gscore = Math.max(0, Math.min(10, 10 - (totalErrCount / Math.max(wordCount,1)) * 10));
-  S.grammarScores.push(gscore);
-  S.totalErrors += totalErrCount;
-
-  // Track error types
-  ltMatches.forEach(m => {
-    const cat = m.rule && m.rule.category ? m.rule.category.name : 'Grammar';
-    S.errorTypes[cat] = (S.errorTypes[cat]||0) + 1;
-  });
-  if(indianIssues.length){ S.errorTypes['Indian English'] = (S.errorTypes['Indian English']||0) + indianIssues.length; }
-
-  // Build corrected text
-  const corrected = buildCorrected(raw, ltMatches);
-
-  // Vocab suggestions for weak words
-  let vocabHint = '';
-  if(wordCount < 8){ vocabHint = await getBetterWord(raw); }
-
-  // Store
-  S.utterances.push({ raw, corrected, errors: totalErrCount, score: gscore });
-  S.processing = false;
-
-  // Display correction card
-  showCorrectionCard(raw, corrected, ltMatches, indianIssues, vocabHint);
-  updateGrammarScore();
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// INDIAN RULES CHECK
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function applyIndianRules(text){
-  const issues = [];
-  INDIAN_RULES.forEach(rule => {
-    const m = text.match(rule.re);
-    if(m) issues.push({ found: m[0], msg: rule.msg, fix: rule.fix });
-  });
-  return issues;
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// LANGUAGETOOL API
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-async function checkLanguageTool(text){
-  const body = new URLSearchParams({ text, language:'en-IN', enabledOnly:'false' });
-  const resp = await fetch('https://api.languagetool.org/v2/check',{
-    method:'POST',
-    headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body: body.toString()
-  });
-  if(!resp.ok) return [];
-  const data = await resp.json();
-  return (data.matches||[]).filter(m => {
-    const id = m.rule && m.rule.id ? m.rule.id : '';
-    // Filter out style-only and whitespace rules
-    const skip = ['WHITESPACE_RULE','UPPERCASE_SENTENCE_START','EN_QUOTES','COMMA_PARENTHESIS_WHITESPACE'];
-    return !skip.includes(id) && m.replacements && m.replacements.length > 0;
-  });
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// AUTO-CORRECT
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function buildCorrected(text, matches){
-  if(!matches.length) return text;
-  let result = text;
-  const sorted = [...matches].sort((a,b) => b.offset - a.offset);
-  sorted.forEach(m => {
-    if(m.replacements && m.replacements[0]){
-      result = result.slice(0, m.offset) + m.replacements[0].value + result.slice(m.offset + m.length);
-    }
-  });
-  return result;
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// DATAMUSE â BETTER VOCABULARY
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-async function getBetterWord(text){
-  try{
-    const words = text.trim().split(/\s+/);
-    const common = ['the','a','an','is','am','are','was','were','I','my','me','it','in','on','at','to','of','and','but','for','so','do','did'];
-    const target = words.find(w => w.length > 4 && !common.includes(w.toLowerCase()));
-    if(!target) return '';
-    const resp = await fetch(`https://api.datamuse.com/words?ml=${encodeURIComponent(target)}&max=3`);
-    if(!resp.ok) return '';
-    const data = await resp.json();
-    const better = data.filter(d => d.word.toLowerCase() !== target.toLowerCase());
-    if(better.length){
-      return `Instead of "<strong>${esc(target)}</strong>", you could also say: <strong>${better.slice(0,2).map(d=>d.word).join('</strong>, <strong>')}</strong>.`;
-    }
-  }catch(e){}
-  return '';
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// PROFESSION DETECTION
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function detectProfession(text){
-  const t = text.toLowerCase();
-  if(/teacher|principal|professor|lecturer|educator|school|college|teach|faculty/.test(t)) S.profession='teacher';
-  else if(/student|studying|studying|university|class|exam|school/.test(t)) S.profession='student';
-  else if(/engineer|developer|software|it |programmer|tech|coding/.test(t)) S.profession='engineer';
-  else if(/doctor|nurse|medical|hospital|physician|health/.test(t)) S.profession='doctor';
-}
-
-function detectKeywords(text){
-  const t = text.toLowerCase();
-  const checks = ['music','sing','guitar','cricket','yoga','gym','reading','cooking','travel','painting','garden'];
-  checks.forEach(kw => { if(t.includes(kw) && !S.detectedKeywords.includes(kw)) S.detectedKeywords.push(kw); });
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// DISPLAY
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function showAnswerBubble(text){
-  const main = document.getElementById('smain');
-  const el = document.createElement('div');
-  el.className = 'abubble';
-  el.textContent = text;
-  main.appendChild(el);
-  main.scrollTop = main.scrollHeight;
-}
-
-function showCorrectionCard(raw, corrected, ltMatches, indianIssues, vocabHint){
-  const main = document.getElementById('smain');
-  const hasErrors = ltMatches.length > 0 || indianIssues.length > 0;
-
-  if(!hasErrors){
-    const el = document.createElement('div');
-    el.className = 'noerr';
-    el.innerHTML = `<div class="noerr-ico">â</div>
-      <div class="noerr-txt">No grammar errors found!</div>
-      <div class="noerr-sub">Well done, ${esc(S.name)}. Keep speaking naturally.</div>`;
-    main.appendChild(el);
-    // speak a positive acknowledgment
-    speak(`Well done ${S.name}! No errors found. `);
-  } else {
-    const ccard = document.createElement('div');
-    ccard.className = 'ccard';
-    let html = `<div class="ccard-title">Correction</div>`;
-         // Show first major correction prominently
-    const firstLTHX]Ú\ÖÌNÂÛÛÝ\ÝSH[X[\ÜÝY\ÖÌNÂY\ÝS^ÂÛÛÝÜÛÔ\H\ÝSÝ[Â[
-ÏH]Û\ÜÏHÙ\\ÝÈÜ[Û\ÜÏHÙ\^¸§%ÏÜÜ[Ü[Û\ÜÏHÙ\]Ù\ØÊ]Ê_OÜÜ[Ù]ÂY\ÝS^
-^ÂÛÛÝ^YH]Ë\XÙJ]ÈYÑ^
-\ØÔJÜÛÔ\
-K	ÙÚIÊK\ÝS^
-NÂ[
-ÏH]Û\ÜÏHÛÚË\ÝÈÜ[Û\ÜÏHÛÚË^¸§$ÏÜÜ[Ü[Û\ÜÏHÛÚË]Ù\ØÊ^Y
-_OÜÜ[Ù]ÂB[
-ÏH]Û\ÜÏHÜ[HÝÛÏ[X[[Û\ÚÜÝÛÏ	Ù\ØÊ\ÝS\ÙÊ_OÙ]ÂH[ÙHY\Ý
-^ÂÛÛÝÜÛÈH]ËÛXÙJ\ÝÙÙ]\ÝÙÙ]
-È\Ý[Ý
-NÂÛÛÝ^H\Ý\XÙ[Y[ÖÌK[YNÂÛÛÝØ][YHH\Ý[H	\Ý[KØ]YÛÜHÈ\Ý[KØ]YÛÜK[YH	ÑÜ[[X\ÎÂ[
-ÏH]Û\ÜÏHÙ\\ÝÈÜ[Û\ÜÏHÙ\^¸§%ÏÜÜ[Ü[Û\ÜÏHÙ\]Ù\ØÊ]Ê_OÜÜ[Ù]Â[
-ÏH]Û\ÜÏHÛÚË\ÝÈÜ[Û\ÜÏHÛÚË^¸§$ÏÜÜ[Ü[Û\ÜÏHÛÚË]Ù\ØÊÛÜXÝY
-_OÜÜ[Ù]Â[
-ÏH]Û\ÜÏHÜ[HÝÛÏÙ\ØÊØ][YJ_NÜÝÛÏ	Ù\ØÊ\ÝY\ÜØYÙH\ÝÚÜY\ÜØYÙH	ÉÊ_OÙ]ÂBËÈÚÝÈY][Û[\ÜÈÛÝ[ÛÛÝ[ÜPÛÝ[HX]Ú\Ë[Ý
-È[X[\ÜÝY\Ë[ÝHNÂY[ÜPÛÝ[
-^Â[
-ÏH]Û\ÜÏHÜ[HÝ[OHÜ\XÛÛÜ\K]Ø\NØÛÛÜ\K]Ø\HÝÛÏÉÛ[ÜPÛÝ[H[ÜH\ÜÝYIÛ[ÜPÛÝ[OÉÜÉÎÉßOÜÝÛÏ[\ÈÙ[[ÙKÙ]ÂBËÈØØX[YØØX[
-^Â[
-ÏH]Û\ÜÏHÝØØXÝÛÏ¼'ä¨HØØX[\NÜÝÛÏ	ÝØØX[OÙ]ÂBËÈÜXZÈ]ÛYÛÜXÝY	ÛÜXÝYOOH]Ê^Â[
-ÏH]ÛÛ\ÜÏHÜÜXZËXÛÛXÚÏHÜXZÊ	ÐÛÜXÝÙ[[ÙN	ØÛÜXÝY\XÙJÉËÙË	È_IÊH¼'å"X\ÛÜXÝÙ[[ÙOØ]ÛÂBØØ\[\SH[ÂXZ[\[Ú[
-ØØ\
-NÂËÈ]]Ë\ÜXZÈÛÜXÝY\Ú[ÛYÛÜXÝY	ÛÜXÝYOOH]Ê^ÂÙ][Y[Ý]
-
-
-OOÜXZÊ	ÕHÛÜXÝÙ[[ÙH\Î	È
-ÈÛÜXÝY
-K
-
-NÂBBËÈÚÝÈ^]ÛÚÝÓ^
-NÂXZ[ØÜÛÜHXZ[ØÜÛZYÚÂB[Ý[ÛÚÝÓ^
-^ÂÛÛÝÝÈHØÝ[Y[Ù][[Y[RY
-	ÝÝÉÊNÂÝË[\SH]ÛÛ\ÜÏHÛÛXÚÏH^]Y\Ý[Û
-H^]Y\Ý[Û8¡¤Ø]Û]ÛÛ\ÜÏHØÛÛXÚÏH[Ù\ÜÚ[Û
-H]OH[Ù\ÜÚ[Û¸£îOØ]ÛÂB[Ý[Û^]Y\Ý[Û
-^ÂËRY
-ÊÎÂYËRYHË]Y\Ý[ÛË[Ý
-^È[Ù\ÜÚ[Û
-NÈ]\ÈB[\]Y\Ý[Û
-NÂBËÈ8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥dËÈÂËÈ8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d[Ý[ÛÜXZÊ
-^ÂY	ÝÚ[ÝËÜYXÚÞ[\Ú\ÊH]\ÂÚ[ÝËÜYXÚÞ[\Ú\ËØ[Ù[
-
-NÂÛÛÝHH]ÈÜYXÚÞ[\Ú\Õ]\[ÙJ
-NÂK]HH
-ÎÈK]ÚHKÈK[ÈH	Ù[RSÎÂÚ[ÝËÜYXÚÞ[\Ú\ËÜXZÊJNÂBËÈÜXZÈH]Y\Ý[ÛSÙY\ZXÈ]Û\ØXY[[È[ËËÈ\È\ÈÜ]XØ[Û[ÚY]Y[È\Ø\H]\Ý[X\ÙHÜXZÙ\ËÈYÜHZXÈ[]\ÈÜÜÚXK\Ù\Ø[Ý\ZXÈÛÈX\K[Ý[ÛÜXZÔ]Y\Ý[Û
-^ÂËÈ\ØXHHZXÈ]ÛÚ[HÜXZÚ[ÂÛÛÝ[XPH
-
-HOÂÛÛÝHØÝ[Y[Ù][[Y[RY
-	ÛZXØÊNÂY	TË\Ý[[Ê^È\ØXYH[ÙNÈÝ[KÜXÚ]HH	ÉÎÈBÙ]Ý]
-	ÚYIË	Õ\ZXÈÈ[ÝÙ\ÊNÂNÂÛÛÝHØÝ[Y[Ù][[Y[RY
-	ÛZXØÊNÂY^È\ØXYHYNÈÝ[KÜXÚ]HH	Ì	ÎÈBÙ]Ý]
-	ÚYIË	ü'å"]Y\Ý[ÛÜXZÚ[ø )ÊNÂY]Ú[ÝËÜYXÚÞ[\Ú\Ê^È[XP
-NÈ]\ÈBÚ[ÝËÜYXÚÞ[\Ú\ËØ[Ù[
-
-NÂÛÛÝHH]ÈÜYXÚÞ[\Ú\Õ]\[ÙJ
-NÂK]HH
-ÎÈK]ÚHKÈK[ÈH	Ù[RSÎÂËÈ[XÚÎ[XHZXÈY\LÙXÛÛÈX^
-Ü\HÛÈ]Y\Ý[ÛÊBÛÛÝ[XÚÈHÙ][Y[Ý]
-[XPL
-NÂKÛ[H
-
-HOÈÛX\[Y[Ý]
-[XÚÊNÈÙ][Y[Ý]
-[XP
-NÈNÂKÛ\ÜH
-
-HOÈÛX\[Y[Ý]
-[XÚÊNÈ[XP
-NÈNÂÚ[ÝËÜYXÚÞ[\Ú\ËÜXZÊJNÂBËÈ8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥dËÈRHÕUHSTÂËÈ8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d8¥d[Ý[ÛÙ]Ý]
-[ÙKX[
-^ÂØÝ[Y[Ù][[Y[RY
-	ÜÝ]	ÊK^ÛÛ[HX[ÂØÝ[Y[]Y\TÙ[XÝÜ[
-	Ë\ÊKÜXXÚ
-OÛ\ÜÓ\ÝÙÙÛJ	ÛÛË[ÙOOOIÛ\Ý[ÊJNÂB[Ý[ÛÙ]ÚXÙS[ÙJ
-^ÂÛÛÝÝÈHØÝ[Y[Ù][[Y[RY
-	ÝÝÉÊNÂÝË[\SH]ÛÛ\ÜÏHZXØYHZXØÛÛXÚÏHÙÙÛSZXÊ
-HÜ[YHZXÚXÛÈ¼'ã©ÜÜ[Ü[YHZXÛÜXZÈ[ÝÙ\ÜÜ[Ø]Û]ÛÛ\ÜÏHØÛÛXÚÏHÕ^
-
-H]OH\H[ÝXY¸£*;î#ÏØ]ÛÂØÝ[Y[Ù][[Y[RY
-	ÝÝÉÊKÝ[K\Ü^HH	ÛÛIÎÂØÝ[Y[Ù][[Y[RY
-	ÝÝÉÊKÝ[K\Ü^HH	Ù^	ÎÂB[Ý[ÛÙ]\Ý[[ÙJ
-^ÂÛÛÝÝÈHØÝ[Y[Ù][[Y[RY
-	ÝÝÉÊNÂÝË[\SH]ÛÛ\ÜÏHZXØÝYHZXØÛÛXÚÏHÙÙÛSZXÊ
-HÜ[¸£îOÜÜ[Ü[ÝÜÜÜ[Ø]ÛÂB[Ý[ÛÙ]\ØXY[ÙJ
-^ÂÛÛÝÝÈHØÝ[Y[Ù][[Y[RY
-	ÝÝÉÊNÂÝË[\SH]ÛÛ\ÜÏHZXØ\ØXYÝ[OHÜXÚ]NÜ[¸¦ïÜÜ[Ü[ÚXÚÚ[ËÜÜ[Ø]ÛÂB[Ý[ÛÕ^
-
-^ÂØÝ[Y[Ù][[Y[RY
-	ÝÝÉÊKÝ[K\Ü^HH	ÛÛIÎÂØÝ[Y[Ù][[Y[RY
-	ÝÝÉÊKÝ[K\Ü^HH	Ù^	ÎÂÙ]Timeout(()=>document.getElementById('tinput').focus(), 100);
-}
-
-function toVoice(){
-  document.getElementById('trow').style.display = 'none';
-  document.getElementById('vrow').style.display = 'flex';
-}
-
-function updateGrammarScore(){
-  const scores = S.grammarScores;
-  if(!scores.length){ document.getElementById('sc-g').textContent='â'; return; }
-  const avg = scores.reduce((a,b)=>a+b,0)/scores.length;
-  const el = document.getElementById('sc-g');
-  el.textContent = avg.toFixed(1);
-  el.style.color = avg>=7?'var(--ok)':avg>=5?'var(--warn)':'var(--err)';
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// SESSION REPORT
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function endSession(){
-  if(!S.utterances.length){ newSession(); return; }
-  saveStreak();
-
-  const avg = S.grammarScores.length
-    ? S.grammarScores.reduce((a,b)=>a+b,0)/S.grammarScores.length : 0;
-
-  document.getElementById('r)score').textContent = avg.toFixed(1);
-  document.getElementById('r-score').style.color = avg>=7?'var(--ok)':avg>=5?'var(--warn)':'var(--err)';
-  document.getElementById('r-turns').textContent = S.utterances.length;
-  document.getElementById('r-words').textContent = S.totalWords;
-  document.getElementById('rerrors').textContent = S.totalErrors;
-  document.getElementById('r)streak').textContent = S.streak;
-  document.getElementById('rname').textContent = `Great session, ${S.name}!`;
-
-  // Error breakdown
-  const bd = document.getElementById('r-breakdown');
-  const types = Object.entries(S.errorTypes).sort((a,b)=>b[1]-a[1]);
-  if(types.length){
-    bd.innerHTML = types.map(([k,v])=>
-      `<div class="rberr"><span class="rberr-name">${esc(k)}</span><span class="rberr-count">${v}</span></div>`
-    ).join('');
-  } else {
-    bd.innerHTML = `<div style="color:var(--ok);font-size:14px;padding:8px 0">No errors recorded â excellent!</div>`;
-  }
-
-  // Motivational message
-  const msgs = [
-    `Your average grammar score is ${avg.toFixed(1)}/10. ${avg>=7?'Excellent work!':'Keep practicing daily!'}`,
-    `You spoke ${S.totalWords} words in ${S.utterances.length} turns. Every practice session builds fluency.`,
-    `${S.totalErrors===0?'Zero grammar errors â outstanding!':'Focus on correcting the error types shown above.'}`,
-    `Consistency is the key to fluency. Practice again tomorrow to maintain your ${S.streak}-day streak!`
-  ];
-  document.getElementById('r-msg').textContent = msgs[Math.floor(Math.random()*msgs.length)];
-
-  // Switch to report screen
-  document.getElementById('ss').classList.remove('on');
-  document.getElementById('sr').classList.add('on');
-}
-
-function practiceAgain(){
-  document.getElementById('sr').classList.remove('on');
-  S.questions = buildQuestions();
-  S.qIdx = 0; S.utterances = []; S.totalWords = 0;
-  S.totalErrors = 0; S.errorTypes = {}; S.grammarScores = [];
-  S.detectedKeywords = []; S.profession = 'general';
-  document.getElementById('ss').classList.add('on');
-  renderQuestion();
-}
-
-function newSession(){
-  document.getElementById('sr').classList.remove('on');
-  document.getElementById('ss').classList.remove('on');
-  document.getElementById('sw').style.display = 'flex';
-  document.getElementById('smain').innerHTML = '';
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// STREAK (localStorage)
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function saveStreak(){
-  try{
-    const today = new Date().toDateString();
-    const last = localStorage.getItem('vk_lastdate');
-    let streak = parseInt(localStorage.getItem('vk_streak')||'0');
-    if(last === today){ /* same day */ }
-    else if(last && new Date(today)-new Date(last) <= 86400000){ streak++; }
-    else{ streak = 1; }
-    localStorage.setItem('vk_streak',streak);
-    localStorage.setItem('vk_lastdate',today);
-    S.streak = streak;
-  }catch(e){ S.streak = 1; }
-}
-
-function loadStreak(){
-  try{
-    const today = new Date().toDateString();
-    const last = localStorage.getItem('vk_lastdate');
-    let streak = parseInt(localStorage.getItem('vk_streak')||'0');
-    if(!last || new Date(today)-new Date(last) > 86400000) streak = 0;
-    S.streak = streak;
-  }catch(e){ S.streak = 0; }
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// TOAST
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-let toastTimer;
-function showToast(msg){
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('on');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=> el.classList.remove('on'), 4000);
-}
-
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// UTILS
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-function esc(s){ const d=document.createElement('div');d.textContent=s||'';return d.innerHTML; }
-function escRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
-
-// Init check
-window.onload = function(){
-  if(!(window.SpeechRecognition||window.webkitSpeechRecognition)){
-    document.getElementById('wfree').innerHTML = 'â Grammar Â· â Vocabulary Â· â Voice (type-mode on this browser)';
-  }
-  document.getElementById('wname').focus();
-};
-</script>
-</body>
-</html>
