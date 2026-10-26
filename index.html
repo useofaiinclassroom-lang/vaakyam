@@ -1,7 +1,9 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>VAAKYAM — Free English Coach</title>
+<title>VAAKYAM &#8212; Free English Coach</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -215,7 +217,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);
 <div id="sw">
   <div class="wlogo"><span>VAA</span>KYAM</div>
   <div class="wsub">AI English Fluency Coach</div>
-  <div class="wtag">100% FREE · No API Key · No Login</div>
+  <div class="wtag">100% FREE &#183; No API Key &#183; No Login</div>
   <div id="wai-badge" class="wai-badge"></div>
   <div class="wcard">
     <div class="wlbl">Your Name</div>
@@ -226,8 +228,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);
       <button class="gbtn" id="g2" onclick="selGoal('interview',this)">Interview Prep</button>
       <button class="gbtn" id="g3" onclick="selGoal('fluency',this)">Fluency Building</button>
     </div>
-    <button class="wstart" id="wstart" onclick="startSession()">Start Practice →</button>
-    <div class="wfree"><span>✓ Grammar</span> · <span>✓ Vocabulary</span> · <span>✓ Voice</span> · Zero cost</div>
+    <button class="wstart" id="wstart" onclick="startSession()">Start Practice &#8594;</button>
+    <div class="wfree"><span>&#10003; Grammar</span> &#183; <span>&#10003; Vocabulary</span> &#183; <span>&#10003; Voice</span> &#183; Zero cost</div>
   </div>
 </div>
 
@@ -235,11 +237,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);
 <div id="ss">
   <div class="shdr">
     <div>
-      <div class="sname">Hello, <span id="shdr-name">—</span></div>
+      <div class="sname">Hello, <span id="shdr-name">&#8212;</span></div>
       <div class="sprog" id="sprog">Question 1 of 12</div>
     </div>
     <div class="sscore-wrap">
-      <div class="sscore"><div class="sscore-val" id="sc-g">—</div><div class="sscore-lbl">Grammar</div></div>
+      <div class="sscore"><div class="sscore-val" id="sc-g">&#8212;</div><div class="sscore-lbl">Grammar</div></div>
       <div class="sscore"><div class="sscore-val" id="sc-q">0</div><div class="sscore-lbl">Turns</div></div>
     </div>
   </div>
@@ -254,17 +256,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);
     </div>
     <div class="btnrow" id="vrow">
       <button class="micbtn" id="micbtn" onclick="toggleMic()">
-        <span id="micico">🎤</span><span id="miclbl">Speak Answer</span>
+        <span id="micico">&#127908;</span><span id="miclbl">Speak Answer</span>
       </button>
-      <button class="kbbtn" onclick="toText()" title="Type instead"><span class="kbico">⌨</span><span>Type</span></button>
+      <button class="kbbtn" onclick="toText()" title="Type instead"><span class="kbico">&#9000;</span><span>Type</span></button>
     </div>
     <div id="mhint" style="display:none;text-align:center;font-size:11px;color:var(--muted);margin-top:6px">
-      Can't use mic? &nbsp;<span onclick="toText()" style="color:var(--accent);cursor:pointer;text-decoration:underline">Type your answer instead</span>
+      Can&apos;t use mic? &nbsp;<span onclick="toText()" style="color:var(--accent);cursor:pointer;text-decoration:underline">Type your answer instead</span>
     </div>
     <div class="trow" id="trow" style="display:none">
       <input class="tinput" id="tinput" placeholder="Type your answer here..." onkeydown="if(event.key==='Enter')submitText()">
-      <button class="sendbtn" onclick="submitText()">▶</button>
-      <button class="kbbtn" onclick="toVoice()">🎤</button>
+      <button class="sendbtn" onclick="submitText()">&#9654;</button>
+      <button class="kbbtn" onclick="toVoice()">&#127908;</button>
     </div>
   </div>
 </div>
@@ -274,7 +276,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);
   <div class="rlogo"><span>VAA</span>KYAM</div>
   <div class="rname" id="rname">Great session!</div>
   <div class="rscore-circle">
-    <div class="rscore-num" id="r-score">—</div>
+    <div class="rscore-num" id="r-score">&#8212;</div>
     <div class="rscore-lbl">/ 10</div>
   </div>
   <div id="r-trend" class="rttrend" style="display:none"></div>
@@ -286,7 +288,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);
   </div>
   <div class="rbreakdown">
     <div class="rbtitle">Error Breakdown</div>
-    <div id="r-breakdown">—</div>
+    <div id="r-breakdown">&#8212;</div>
   </div>
   <div class="rmsg" id="r-msg"></div>
   <div class="rbtns">
@@ -443,7 +445,7 @@ const INDIAN_RULES = [
   {re:/\b(is|am|are|was|were)\s+understanding\b/gi,msg:'Say "understands" or "understand" \u2014 not "is understanding".',fix:'understands'},
   {re:/\b(is|am|are|was|were)\s+needing\b/gi,    msg:'Say "needs" or "need" \u2014 not "is needing".',                  fix:'needs'},
   {re:/\b(is|am|are|was|were)\s+believing\b/gi,  msg:'Say "believes" or "believe" \u2014 not "is believing".',          fix:'believes'},
-  {re:/\"(is|am|are|was|were)\s+remembering\b/gi,msg:'Say "remembers" or "remember" \u2014 not "is remembering".',      fix:'remembers'},
+  {re:/\b(is|am|are|was|were)\s+remembering\b/gi,msg:'Say "remembers" or "remember" \u2014 not "is remembering".',      fix:'remembers'},
   {re:/\b(is|am|are|was|were)\s+forgetting\b/gi, msg:'Say "forgets" or "forget" \u2014 not "is forgetting".',           fix:'forgets'},
   {re:/\b(is|am|are|was|were)\s+hating\b/gi,     msg:'Say "hates" or "hate" \u2014 not "is hating".',                  fix:'hates'},
   {re:/\b(is|am|are|was|were)\s+loving\b/gi,     msg:'Say "loves" or "love" \u2014 not "is loving".',                  fix:'loves'},
@@ -451,7 +453,7 @@ const INDIAN_RULES = [
   // ---- "Having" misused for states (should be simple present) ----
   {re:/\b(is|am|are|was|were)\s+having\s+(a\s+)?doubt\b/gi, msg:'Say "have a doubt" or "I am not sure" \u2014 not "having a doubt".',fix:'have a doubt'},
   {re:/\b(is|am|are|was|were)\s+having\s+(a\s+)?problem\b/gi,msg:'Say "have a problem" \u2014 not "having a problem".',              fix:'have a problem'},
-  {re:/\b(is|am|are|was|were)\s+having\s+(a\s+)?fever\/gi,  msg:'Say "have a fever" \u2014 not "having a fever".',                  fix:'have a fever'},
+  {re:/\b(is|am|are|was|were)\s+having\s+(a\s+)?fever\b/gi,  msg:'Say "have a fever" \u2014 not "having a fever".',                  fix:'have a fever'},
   {re:/\b(is|am|are|was|were)\s+having\s+tension\b/gi,       msg:'Say "feel stressed" or "am stressed" \u2014 not "having tension".',fix:'feel stressed'},
   {re:/\b(is|am|are|was|were)\s+having\s+(hunger|thirst)\b/gi,msg:'Say "am hungry" / "am thirsty" \u2014 not "having hunger".',      fix:'am hungry'},
   {re:/\b(is|am|are|was|were)\s+(not\s+)?having\s+(any\s+)?(idea|clue)\b/gi, msg:'Say "have no idea" or "do not have any idea" \u2014 not "am not having any idea".',fix:'have no idea'},
@@ -824,7 +826,7 @@ async function handleUtterance(raw){
 
   // Score
   const totalErrCount = indianIssues.length + ltMatches.length;
-  const gscore = Math.max(0, Math.min(10, 10 - (totalErrCount /[Math.max(wordCount,1)) * 10));
+  const gscore = Math.max(0, Math.min(10, 10 - (totalErrCount / Math.max(wordCount,1)) * 10));
   S.grammarScores.push(gscore);
   S.totalErrors += totalErrCount;
 
@@ -883,10 +885,10 @@ async function checkLanguageTool(text){
   });
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 // CHROME BUILT-IN AI (GEMINI NANO) \u2014 grammar check via window.ai.languageModel
 // Only active in Chrome 128+ with built-in AI enabled; silently no-ops otherwise
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 async function checkGeminiNano(text){
   try{
     if(!window.ai || !window.ai.languageModel) return [];
@@ -904,7 +906,7 @@ async function checkGeminiNano(text){
   }catch(e){ return []; }
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 // AUTO-CORRECT
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 function buildCorrected(text, matches){
@@ -949,7 +951,26 @@ const WEAK_WORDS = {
   'think':['believe','consider'],'said':['mentioned','explained'],
   'went':['travelled','proceeded'],'like':['appreciate','enjoy'],
   'know':['understand','recognise'],'want':['desire','aspire'],
-  'show':['demonstrate','illustrate'],'e[	Ζ��\��\�	�	��\ܝ	�K�	�\�IΖ��][\�I�	�\I�K	��]�IΖ���ݚYI�	��۝�X�]I�K�	�Z�IΖ��[�\�Z�I�	�\��YI�K	ٚ[�	Ζ��\��ݙ\��	�Y[�Y�I�K�	�\��Ζ��[�]Z\�I�	ܙ\]Y\�	�K	�[	Ζ��[��ܛI�	�^Z[��K�	��ܚ�Ζ���۝�X�]I�	���X�ܘ]I�K	�X\��Ζ��X�]Z\�I�	�X\�\��K�	�\�	Ζ���[[��[���	�[X[�[���K	�X\�IΖ����ZY��ܝ�\�	�	�X[�Y�XX�I�K�	ۙ]�Ζ��[��ݘ]]�I�	��۝[\ܘ\�I�K	��	Ζ��\�X�\�Y	�	�^\�Y[��Y	�K�	��IΖ��][\	�	�[�X]��\��K	��\�	Ζ��[�]X]I�	���[Y[��I�K�	�[\ܝ[�	Ζ��\��[�X[	�	�ܝX�X[	�K	�[�\�\�[��Ζ�٘\��[�][���	���\[[���K�	��؛[IΖ���[[��I�	�؜�X�I�K�[��Ζ��\�X�	�	�[[Y[�	�K�	��	Ζ���ۜ�Y\�X�I�	��X��[�X[	�K	ؙ]\�Ζ��[\�ݙY	�	��\\�[܉�K�	�Y��X�[	Ζ���[[��[���	�[X[�[���K	��[\IΖ����ZY��ܝ�\�	�	��X\��K�	٘\�	Ζ��Y��X�Y[�	�	ܘ\Y	�K	����Ζ��ܘYX[	�	�YX\�\�Y	�K�	�[�Ζ��\��\���	���[][�X�]I�K	��YIΖ��؜�\��I�	ܙX��ۚ\�I�K�	���YIΖ��\��]�I�	ڛ�[��K	���Ζ�����YY	�	ݙ[�\�I�K�	ٙY[	Ζ��^\�Y[��I�	��[��I�K	ܙ[Y[X�\�Ζ�ܙX�[	�	ܙX��ۚ\�I�K�	��[��IΖ��[\�ݙI�	��[�ٛܛI�K	��Y\	Ζ��XZ[�Z[��	��\�Z[��B�N���L�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�MLL�ML0\u2550\u2550\u2550\u2550
+  'show':['demonstrate','illustrate'],'help':['assist','support'],
+  'use':['utilise','apply'],'give':['provide','contribute'],
+  'take':['undertake','pursue'],'find':['discover','identify'],
+  'ask':['enquire','request'],'tell':['inform','explain'],
+  'work':['contribute','collaborate'],'learn':['acquire','master'],
+  'hard':['challenging','demanding'],'easy':['straightforward','manageable'],
+  'new':['innovative','contemporary'],'old':['established','experienced'],
+  'try':['attempt','endeavour'],'start':['initiate','commence'],
+  'important':['essential','crucial'],'interesting':['fascinating','compelling'],
+  'problem':['challenge','obstacle'],'thing':['aspect','element'],
+  'lot':['considerable','substantial'],'better':['improved','superior'],
+  'difficult':['challenging','demanding'],'simple':['straightforward','clear'],
+  'fast':['efficient','rapid'],'slow':['gradual','measured'],
+  'talk':['discuss','communicate'],'see':['observe','recognise'],
+  'come':['arrive','join'],'go':['proceed','venture'],
+  'feel':['experience','sense'],'remember':['recall','recognise'],
+  'change':['improve','transform'],'keep':['maintain','sustain']
+};
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 // DATAMUSE \u2014 BETTER VOCABULARY
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 async function getBetterWord(text){
@@ -1077,7 +1098,7 @@ function showCorrectionCard(raw, corrected, ltMatches, indianIssues, vocabHint, 
       phraseDiv.className = 'cphrase';
       phraseDiv.style.display = 'none';
       ccard.appendChild(phraseDiv);
-    � getParaphrase(raw).then(alt => {
+      getParaphrase(raw).then(alt => {
         if(alt){
           phraseDiv.innerHTML = `<strong>💡 Try saying:</strong> ${esc(alt)}`;
           phraseDiv.style.display = '';
@@ -1160,7 +1181,7 @@ function speakQuestion(txt){
 
   // Fallback: enable mic after 8 seconds max
   const fallback = setTimeout(enableBtn, 8000);
-  u.onend   = () => { clearTimeout(fallback); setTimeout(enableBtn, 200); };
+  u.onend  = () => { clearTimeout(fallback); setTimeout(enableBtn, 200); };
   u.onerror = () => { clearTimeout(fallback); enableBtn(); };
 
   window.speechSynthesis.speak(u);
@@ -1271,7 +1292,7 @@ function endSession(){
 
   // Motivational message
   const msgs = [
-    `Iour average grammar score is ${avg.toFixed(1)}/10. ${avg>=7?'Excellent work!':'Keep practicing daily!'}`,
+    `Your average grammar score is ${avg.toFixed(1)}/10. ${avg>=7?'Excellent work!':'Keep practicing daily!'}`,
     `You spoke ${S.totalWords} words in ${S.utterances.length} turns. Every practice session builds fluency.`,
     `${S.totalErrors===0?'Zero grammar errors \u2014 outstanding!':'Focus on correcting the error types shown above.'}`,
     `Consistency is the key to fluency. Practice again tomorrow to maintain your ${S.streak}-day streak!`
@@ -1302,7 +1323,7 @@ function newSession(){
 
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 // STREAK (localStorage)
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 function saveStreak(){
   try{
     const today = new Date().toDateString();
@@ -1329,7 +1350,7 @@ function loadStreak(){
 
 // ═══════════════════════════════════════════════════════
 // PHASE 2: SESSION SCORE HISTORY (localStorage)
-// ════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function saveScoreHistory(score){
   try{
     const hist = JSON.parse(localStorage.getItem('vk_scores')||'[]');
@@ -1346,7 +1367,7 @@ function loadLastScore(){
   }catch(e){ return null; }
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 // TOAST
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 let toastTimer;
@@ -1358,7 +1379,7 @@ function showToast(msg){
   toastTimer = setTimeout(()=> el.classList.remove('on'), 4000);
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550550\u2550
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 // UTILS
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 function esc(s){ const d=document.createElement('div');d.textContent=s||'';return d.innerHTML; }
@@ -1401,6 +1422,5 @@ window.onload = async function(){
   }
 };
 </script>
-
-
-</body></html>
+</body>
+</html>
