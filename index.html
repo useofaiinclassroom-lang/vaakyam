@@ -515,7 +515,7 @@ const INDIAN_RULES = [
   {re:/(?<=\b(?:she|he|it)\s+)give\b/gi,   msg:'With she/he/it say "gives" \u2014 not "give".',       fix:'gives'},
   {re:/(?<=\b(?:she|he|it)\s+)get\b/gi,    msg:'With she/he/it say "gets" \u2014 not "get".',         fix:'gets'},
   {re:/(?<=\b(?:she|he|it)\s+)keep\b/gi,   msg:'With she/he/it say "keeps" \u2014 not "keep".',       fix:'keeps'},
-  {re:/(?8=\b(?:she|he|it)\s+)help\b/gi,   msg:'With she/he/it say "helps" \u2014 not "help".',       fix:'helps'},
+  {re:/(?<=\b(?:she|he|it)\s+)help\b/gi,   msg:'With she/he/it say "helps" \u2014 not "help".',       fix:'helps'},
   {re:/(?<=\b(?:she|he|it)\s+)bring\b/gi,  msg:'With she/he/it say "brings" \u2014 not "bring".',     fix:'brings'},
   {re:/(?<=\b(?:she|he|it)\s+)buy\b/gi,    msg:'With she/he/it say "buys" \u2014 not "buy".',         fix:'buys'},
   {re:/(?<=\b(?:she|he|it)\s+)feel\b/gi,   msg:'With she/he/it say "feels" \u2014 not "feel".',       fix:'feels'},
@@ -526,8 +526,8 @@ const INDIAN_RULES = [
 
   // ---- Subject-be agreement: was vs. were ----
   {re:/(?<=\bI\s+)were\b/gi,               msg:'Say "I was" \u2014 not "I were".',                    fix:'was'},
-  {re:/(?8=\b(?:he|she|it)\s+)were\b/gi,   msg:'With he/she/it say "was" \u2014 not "were".',         fix:'was'},
-  {re:/(?8=\b(?:we|they|you)\s+)was\b/gi,  msg:'With we/they/you say "were" \u2014 not "was".',       fix:'were'},
+  {re:/(?<=\b(?:he|she|it)\s+)were\b/gi,   msg:'With he/she/it say "was" \u2014 not "were".',         fix:'was'},
+  {re:/(?<=\b(?:we|they|you)\s+)was\b/gi,  msg:'With we/they/you say "were" \u2014 not "was".',       fix:'were'},
 
   // ---- Wrong past participle after have / has / had ----
   {re:/(?<=\b(?:have|has|had)\s+)went\b/gi,  msg:'Say "gone" after have/has/had \u2014 not "went".',   fix:'gone'},
