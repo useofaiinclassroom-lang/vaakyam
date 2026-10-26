@@ -129,10 +129,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);
 .micbtn:active{transform:scale(.97)}
 .micbtn.lstn{background:var(--edim);border-color:var(--err);color:var(--err)}
 .micbtn:disabled{opacity:.4;cursor:not-allowed}
-.kbbtn{width:54px;height:54px;background:transparent;border:1px solid var(--border);
-  border-radius:14px;color:var(--muted);font-size:22px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  -webkit-tap-highlight-color:transparent}
+.kbbtn{width:72px;height:54px;background:transparent;border:1px solid var(--border);
+  border-radius:14px;color:var(--muted);font-size:14px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  line-height:1.2;-webkit-tap-highlight-color:transparent}
+.kbbtn .kbico{font-size:20px}
 .nxtbtn{flex:1;height:54px;background:var(--ok2);border:1px solid rgba(0,192,127,.4);
   border-radius:14px;color:var(--ok);font-size:15px;font-weight:700;
   cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -220,14 +221,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);
   <div id="wai-badge" class="wai-badge"></div>
   <div class="wcard">
     <div class="wlbl">Your Name</div>
-    <input class="wname" type="text" id="wname" placeholder="Enter your first name..." maxlength="30" oninput="chkStart()">
+    <input class="wname" type="text" id="wname" placeholder="Enter your first name..." maxlength="30" oninput="chkStart()" onchange="chkStart()" onpaste="setTimeout(chkStart,50)">
     <div class="wlbl">Practice Goal</div>
     <div class="goals">
       <button class="gbtn sel" id="g1" onclick="selGoal('conversation',this)">Daily Conversation</button>
       <button class="gbtn" id="g2" onclick="selGoal('interview',this)">Interview Prep</button>
       <button class="gbtn" id="g3" onclick="selGoal('fluency',this)">Fluency Building</button>
     </div>
-    <button class="wstart" id="wstart" onclick="startSession()" disabled>Start Practice &#8594;</button>
+    <button class="wstart" id="wstart" onclick="startSession()">Start Practice &#8594;</button>
     <div class="wfree"><span>&#10003; Grammar</span> &#183; <span>&#10003; Vocabulary</span> &#183; <span>&#10003; Voice</span> &#183; Zero cost</div>
   </div>
 </div>
@@ -257,7 +258,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);
       <button class="micbtn" id="micbtn" onclick="toggleMic()">
         <span id="micico">&#127908;</span><span id="miclbl">Speak Answer</span>
       </button>
-      <button class="kbbtn" onclick="toText()" title="Type instead">&#9000;&#65039;</button>
+      <button class="kbbtn" onclick="toText()" title="Type instead"><span class="kbico">&#9000;</span><span>Type</span></button>
+    </div>
+    <div id="mhint" style="display:none;text-align:center;font-size:11px;color:var(--muted);margin-top:6px">
+      Can&apos;t use mic? &nbsp;<span onclick="toText()" style="color:var(--accent);cursor:pointer;text-decoration:underline">Type your answer instead</span>
     </div>
     <div class="trow" id="trow" style="display:none">
       <input class="tinput" id="tinput" placeholder="Type your answer here..." onkeydown="if(event.key==='Enter')submitText()">
@@ -296,6 +300,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);
 <div id="toast"></div>
 
 <script>
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// QUESTION BANK
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 const QB = {
   intro: [
@@ -439,7 +445,7 @@ const INDIAN_RULES = [
   {re:/\b(is|am|are|was|were)\s+understanding\b/gi,msg:'Say "understands" or "understand" \u2014 not "is understanding".',fix:'understands'},
   {re:/\b(is|am|are|was|were)\s+needing\b/gi,    msg:'Say "needs" or "need" \u2014 not "is needing".',                  fix:'needs'},
   {re:/\b(is|am|are|was|were)\s+believing\b/gi,  msg:'Say "believes" or "believe" \u2014 not "is believing".',          fix:'believes'},
-  {re:/\b(is|am|are|was|were)\s+remembering\b/gi,msg:'Say "remembers" or "remember" \u2014 not "is remembering".',      fix:'remembers'},
+  {re:/\"(is|am|are|was|were)\s+remembering\b/gi,msg:'Say "remembers" or "remember" \u2014 not "is remembering".',      fix:'remembers'},
   {re:/\b(is|am|are|was|were)\s+forgetting\b/gi, msg:'Say "forgets" or "forget" \u2014 not "is forgetting".',           fix:'forgets'},
   {re:/\b(is|am|are|was|were)\s+hating\b/gi,     msg:'Say "hates" or "hate" \u2014 not "is hating".',                  fix:'hates'},
   {re:/\b(is|am|are|was|were)\s+loving\b/gi,     msg:'Say "loves" or "love" \u2014 not "is loving".',                  fix:'loves'},
@@ -447,7 +453,7 @@ const INDIAN_RULES = [
   // ---- "Having" misused for states (should be simple present) ----
   {re:/\b(is|am|are|was|were)\s+having\s+(a\s+)?doubt\b/gi, msg:'Say "have a doubt" or "I am not sure" \u2014 not "having a doubt".',fix:'have a doubt'},
   {re:/\b(is|am|are|was|were)\s+having\s+(a\s+)?problem\b/gi,msg:'Say "have a problem" \u2014 not "having a problem".',              fix:'have a problem'},
-  {re:/\b(is|am|are|was|were)\s+having\s+(a\s+)?fever\b/gi,  msg:'Say "have a fever" \u2014 not "having a fever".',                  fix:'have a fever'},
+  {re:/\b(is|am|are|was|were)\s+having\s+(a\s+)?fever\/gi,  msg:'Say "have a fever" \u2014 not "having a fever".',                  fix:'have a fever'},
   {re:/\b(is|am|are|was|were)\s+having\s+tension\b/gi,       msg:'Say "feel stressed" or "am stressed" \u2014 not "having tension".',fix:'feel stressed'},
   {re:/\b(is|am|are|was|were)\s+having\s+(hunger|thirst)\b/gi,msg:'Say "am hungry" / "am thirsty" \u2014 not "having hunger".',      fix:'am hungry'},
   {re:/\b(is|am|are|was|were)\s+(not\s+)?having\s+(any\s+)?(idea|clue)\b/gi, msg:'Say "have no idea" or "do not have any idea" \u2014 not "am not having any idea".',fix:'have no idea'},
@@ -493,37 +499,37 @@ const INDIAN_RULES = [
   {re:/(?<=\b(?:she|he|it)\s+)do\b/gi,     msg:'With she/he/it say "does" \u2014 not "do".',          fix:'does'},
   {re:/(?<=\b(?:she|he|it)\s+)make\b/gi,   msg:'With she/he/it say "makes" \u2014 not "make".',       fix:'makes'},
   {re:/(?<=\b(?:she|he|it)\s+)take\b/gi,   msg:'With she/he/it say "takes" \u2014 not "take".',       fix:'takes'},
-  {re:/(?<=\b(?:she|he|it)\s++play\b/gi,   msg:'With she/he/it say "plays" \u2014 not "play".',       fix:'plays'},
+  {re:/(?<=\b(?:she|he|it)\s+)play\b/gi,   msg:'With she/he/it say "plays" \u2014 not "play".',       fix:'plays'},
   {re:/(?<=\b(?:she|he|it)\s+)eat\b/gi,    msg:'With she/he/it say "eats" \u2014 not "eat".',         fix:'eats'},
   {re:/(?<=\b(?:she|he|it)\s+)speak\b/gi,  msg:'With she/he/it say "speaks" \u2014 not "speak".',     fix:'speaks'},
   {re:/(?<=\b(?:she|he|it)\s+)learn\b/gi,  msg:'With she/he/it say "learns" \u2014 not "learn".',     fix:'learns'},
-  {re:/(?<=\b(?:she|he|it)\s++work\b/gi,   msg:'With she/he/it say "works" \u2014 not "work".',       fix:'works'},
+  {re:/(?<=\b(?:she|he|it)\s+)work\b/gi,   msg:'With she/he/it say "works" \u2014 not "work".',       fix:'works'},
   {re:/(?<=\b(?:she|he|it)\s+)live\b/gi,   msg:'With she/he/it say "lives" \u2014 not "live".',       fix:'lives'},
-  {re:/(?<=\b(?:she|he|it)\s++write\b/gi,  msg:'With she/he/it say "writes" \u2014 not "write".',     fix:'writes'},
-  {re:/(?<=\b(?:she|he|it)\s++study\b/gi,  msg:'With she/he/it say "studies" \u2014 not "study".',    fix:'studies'},
+  {re:/(?<=\b(?:she|he|it)\s+)write\b/gi,  msg:'With she/he/it say "writes" \u2014 not "write".',     fix:'writes'},
+  {re:/(?<=\b(?:she|he|it)\s+)study\b/gi,  msg:'With she/he/it say "studies" \u2014 not "study".',    fix:'studies'},
   {re:/(?<=\b(?:she|he|it)\s+)run\b/gi,    msg:'With she/he/it say "runs" \u2014 not "run".',         fix:'runs'},
   {re:/(?<=\b(?:she|he|it)\s+)sleep\b/gi,  msg:'With she/he/it say "sleeps" \u2014 not "sleep".',     fix:'sleeps'},
-  {re:/(?<=\b(?:she|he|it)\s++teach\b/gi,  msg:'With she/he/it say "teaches" \u2014 not "teach".',    fix:'teaches'},
-  {re:/(?<=\b(?:she|he|it)\s++watch\b/gi,  msg:'With she/he/it say "watches" \u2014 not "watch".',    fix:'watches'},
+  {re:/(?<=\b(?:she|he|it)\s+)teach\b/gi,  msg:'With she/he/it say "teaches" \u2014 not "teach".',    fix:'teaches'},
+  {re:/(?<=\b(?:she|he|it)\s+)watch\b/gi,  msg:'With she/he/it say "watches" \u2014 not "watch".',    fix:'watches'},
   {re:/(?<=\b(?:she|he|it)\s+)think\b/gi,  msg:'With she/he/it say "thinks" \u2014 not "think".',     fix:'thinks'},
   {re:/(?<=\b(?:she|he|it)\s+)say\b/gi,    msg:'With she/he/it say "says" \u2014 not "say".',         fix:'says'},
-  {re:/(?<=\b(?:she|he|it)\s++tell\b/gi,   msg:'With she/he/it say "tells" \u2014 not "tell".',       fix:'tells'},
+  {re:/(?<=\b(?:she|he|it)\s+)tell\b/gi,   msg:'With she/he/it say "tells" \u2014 not "tell".',       fix:'tells'},
   {re:/(?<=\b(?:she|he|it)\s+)give\b/gi,   msg:'With she/he/it say "gives" \u2014 not "give".',       fix:'gives'},
   {re:/(?<=\b(?:she|he|it)\s+)get\b/gi,    msg:'With she/he/it say "gets" \u2014 not "get".',         fix:'gets'},
   {re:/(?<=\b(?:she|he|it)\s+)keep\b/gi,   msg:'With she/he/it say "keeps" \u2014 not "keep".',       fix:'keeps'},
-  {re:/(?<=\b(?:she|he|it)\s++help\b/gi,   msg:'With she/he/it say "helps" \u2014 not "help".',       fix:'helps'},
-  {re:/(?<=\b(?:she|he|it)\s++bring\b/gi,  msg:'With she/he/it say "brings" \u2014 not "bring".',     fix:'brings'},
+  {re:/(?8=\b(?:she|he|it)\s+)help\b/gi,   msg:'With she/he/it say "helps" \u2014 not "help".',       fix:'helps'},
+  {re:/(?<=\b(?:she|he|it)\s+)bring\b/gi,  msg:'With she/he/it say "brings" \u2014 not "bring".',     fix:'brings'},
   {re:/(?<=\b(?:she|he|it)\s+)buy\b/gi,    msg:'With she/he/it say "buys" \u2014 not "buy".',         fix:'buys'},
   {re:/(?<=\b(?:she|he|it)\s+)feel\b/gi,   msg:'With she/he/it say "feels" \u2014 not "feel".',       fix:'feels'},
-  {re:/(?<=\b(?:she|he|it)\s++show\b/gi,   msg:'With she/he/it say "shows" \u2014 not "show".',       fix:'shows'},
+  {re:/(?<=\b(?:she|he|it)\s+)show\b/gi,   msg:'With she/he/it say "shows" \u2014 not "show".',       fix:'shows'},
   {re:/(?<=\b(?:she|he|it)\s+)hear\b/gi,   msg:'With she/he/it say "hears" \u2014 not "hear".',       fix:'hears'},
   {re:/(?<=\b(?:she|he|it)\s+)ask\b/gi,    msg:'With she/he/it say "asks" \u2014 not "ask".',         fix:'asks'},
   {re:/(?<=\b(?:she|he|it)\s+)try\b/gi,    msg:'With she/he/it say "tries" \u2014 not "try".',        fix:'tries'},
 
   // ---- Subject-be agreement: was vs. were ----
   {re:/(?<=\bI\s+)were\b/gi,               msg:'Say "I was" \u2014 not "I were".',                    fix:'was'},
-  {re:/(?<=\b(?:he|she|it)\s+)were\b/gi,   msg:'With he/she/it say "was" \u2014 not "were".',         fix:'was'},
-  {re:/(?<=\b(?:we|they|you)\s+)was\b/gi,  msg:'With we/they/you say "were" \u2014 not "was".',       fix:'were'},
+  {re:/(?8=\b(?:he|she|it)\s+)were\b/gi,   msg:'With he/she/it say "was" \u2014 not "were".',         fix:'was'},
+  {re:/(?8=\b(?:we|they|you)\s+)was\b/gi,  msg:'With we/they/you say "were" \u2014 not "was".',       fix:'were'},
 
   // ---- Wrong past participle after have / has / had ----
   {re:/(?<=\b(?:have|has|had)\s+)went\b/gi,  msg:'Say "gone" after have/has/had \u2014 not "went".',   fix:'gone'},
@@ -537,15 +543,15 @@ const INDIAN_RULES = [
   {re:/(?<=\b(?:have|has|had)\s+)took\b/gi,  msg:'Say "taken" after have/has/had \u2014 not "took".',  fix:'taken'},
   {re:/(?<=\b(?:have|has|had)\s+)gave\b/gi,  msg:'Say "given" after have/has/had \u2014 not "gave".',  fix:'given'},
   {re:/(?<=\b(?:have|has|had)\s+)broke\b/gi, msg:'Say "broken" after have/has/had \u2014 not "broke".',fix:'broken'},
-  {re:/(?<=\b(?:have|has|had)\s++sspoke\b/gi, msg:'Say "spoken" after have/has/had \u2014 not "spoke".',fix:'spoken'},
+  {re:/(?<=\b(?:have|has|had)\s+)spoke\b/gi, msg:'Say "spoken" after have/has/had \u2014 not "spoke".',fix:'spoken'},
   {re:/(?<=\b(?:have|has|had)\s+)forgot\b/gi,msg:'Say "forgotten" after have/has/had \u2014 not "forgot".',fix:'forgotten'},
-  {re:/(?<=\b(?:have|has|had)\s++did\b/gi,   msg:'Say "done" after have/has/had \u2014 not "did".',    fix:'done'},
+  {re:/(?<=\b(?:have|has|had)\s+)did\b/gi,   msg:'Say "done" after have/has/had \u2014 not "did".',    fix:'done'},
 ];
 
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 // STATE
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-[et S = {
+let S = {
   name:'', goal:'conversation', questions:[], qIdx:0,
   utterances:[], totalWords:0, totalErrors:0,
   errorTypes:{}, profession:'general', detectedKeywords:[],
@@ -559,7 +565,7 @@ const MAX_RESTARTS = 12;
 
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 // SETUP
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 function chkStart(){
   const v = document.getElementById('wname').value.trim();
   document.getElementById('wstart').disabled = v.length < 2;
@@ -567,18 +573,16 @@ function chkStart(){
 
 function selGoal(g, btn){
   S.goal = g;
-  document.querySelectorAll('.gbpn').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('.gbtn').forEach(b => b.classList.remove('sel'));
   btn.classList.add('sel');
 }
 
 function startSession(){
   const nm = document.getElementById('wname').value.trim();
-  if(!nm) return;
-  // Pre-grant mic permission once so Chrome never prompts again during questions
-  if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
-    navigator.mediaDevices.getUserMedia({audio:true})
-      .then(function(s){s.getTracks().forEach(function(t){t.stop();});})
-      .catch(function(){});
+  if(!nm || nm.length < 1){
+    document.getElementById('wname').focus();
+    showToast('Please enter your name to begin');
+    return;
   }
   S.name = nm.charAt(0).toUpperCase() + nm.slice(1);
   S.questions = buildQuestions();
@@ -587,7 +591,7 @@ function startSession(){
   S.detectedKeywords = []; S.profession = 'general';
 
   document.getElementById('sw').style.display = 'none';
-  document.getElementById('ssd').classList.add('on');
+  document.getElementById('ss').classList.add('on');
   document.getElementById('shdr-name').textContent = S.name;
 
   loadStreak();
@@ -644,200 +648,760 @@ function renderQuestion(){
   const qcard = document.createElement('div');
   qcard.className = 'qcard';
   qcard.innerHTML = `<div class="qlbl">Vaakyam asks</div><div class="qtxt">${esc(q)}</div>`;
-  main.appendChilY
-Xÿ\ô
-N¬àXZ[ãúÿ‹õ€‹HXZ[ãúÿ‹õ€ZY⁄¬ÇàŸ]õ⁄XŸS[ŸJ
-N¬àÀ»\ÿXõHZX»⁄[H]Y\›[€à\»ôZ[ô»‹⁄Ÿ[àLåM[ôõ⁄Y]Y[¬àÀ»\ôÿ\ôH]\›ù[Hô[X\ŸH‹XZŸ\àôYõ‹ôHZX»ÿ[à‹[ãÇà‹XZ‘]Y\›[€äJN¬üBÇôù[ò›[€àô\€€ôT]Y\›[€äJ^¬àYäHOOH	◊◊‘ì—åW◊… ^¬à€€ú›€€HPãúõŸô\‹⁄[€ñ‘ÀúõŸô\‹⁄[€óHPãúõŸô\‹⁄[€ãôŸ[ô\ò[¬àô]\õà€€ÃHPãúõŸô\‹⁄[€ãôŸ[ô\ò[ÃN¬àBàYäHOOH	◊◊‘ì—åó◊… ^¬à€€ú›€€HPãúõŸô\‹⁄[€ñ‘ÀúõŸô\‹⁄[€óHPãúõŸô\‹⁄[€ãôŸ[ô\ò[¬àô]\õà€€ÃWHPãúõŸô\‹⁄[€ãôŸ[ô\ò[ÃWN¬àBàYäHOOH	◊◊“’◊◊… ^¬àõ‹ä€€ú››»ŸàÀô]X›YŸ^]€‹ô ^¬àYä—VU”‘ë—ì”’’T⁄›◊JHô]\õà—VU”‘ë—ì”’’T⁄›◊Kúô\XŸJ◊€ò[YWKŸÀÀõò[YJN¬àBàÀ»ò[òX⁄»»ò[ô€HYô\›[H]Y\›[€Çà€€ú›òàHPãõYô\›[V”X]ôõ€‹äX]úò[ô€J
-JîPãõYô\›[Kõ[ô›
-WN¬àô]\õàòé¬àBàô]\õàN¬üBÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLãÀ»’ãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLôù[ò›[€àŸŸ€SZX 
-^¬àYäÀõ\›[ö[ô ^»›‹ôX 
-N»ô]\õé»BàYäÀúõÿŸ\‹⁄[ô Hô]\õé¬à›\ùôX 
-N¬üBÇôù[ò›[€à›\ùôX 
-^¬à€€ú›‘àH⁄[ô›Àî‹YX⁄ôX€Ÿ€ö][€à⁄[ô›ÀùŸXö⁄]‹YX⁄ôX€Ÿ€ö][€é¬àYäT‘ä^»⁄›’ÿ\›
-	’õ⁄XŸHõ››\‹ùYàX\ŸH\H[›\à[ú›Ÿ\ãâ N»’^
+  main.appendChild(qcard);
+  main.scrollTop = main.scrollHeight;
 
-N»ô]\õé»BàÀ»»\»[ôXYHö[ö\⁄Y
-ZX»ù]€àÿ\»\ÿXõY\ö[ô» KÇàÀ»€X[[^H€õH\»ÿYô]HùYôô\àõ‹à]Y[»\ôÿ\ôHô[X\ŸKÇà⁄[ô›Àú‹YX⁄ﬁ[ù\⁄\»	âà⁄[ô›Àú‹YX⁄ﬁ[ù\⁄\Àòÿ[òŸ[
+  setVoiceMode();
+  // Show mobile type-hint after the first question
+  const mhint = document.getElementById('mhint');
+  if(mhint && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
+    mhint.style.display = 'block';
+  }
+  speakQuestion(q);
+}
 
-N¬à›\úô[ùò[úÿ‹ö\H	…Œ¬à\’\Ÿ\î›‹YHò[ŸN¬àô\›\ù€›[ùH¬àÀõ\›[ö[ô»HùYN¬àŸ]›]
-	€\›[âÀ	‘›\ù[ô»ZX◊Låçâ N¬àŸ]\›[ì[ŸJ
-N¬àŸ][Y[›]
-›\ùôX“[ú›[òŸKLå
-N¬üBÇãÀ»ô\›\ù[€‹à€€ù[ù[›\œYò[ŸH
-ô[XXõH€à[ôõ⁄Y
-KÇãÀ»€ô[ô]]À\ô\›\ù»[ù[\Ÿ\àô\‹Ÿ\»›‹Çôù[ò›[€à›\ùôX“[ú›[òŸJ
-^¬à€€ú›‘àH⁄[ô›Àî‹YX⁄ôX€Ÿ€ö][€à⁄[ô›ÀùŸXö⁄]‹YX⁄ôX€Ÿ€ö][€é¬àYäT‘à\’\Ÿ\î›‹YTÀõ\›[ö[ô Hô]\õé¬ÇàYäô\›\ù€›[ùèHPV‘ëT’Tï ^¬àÀ»€»X[ûH[\HﬁX€\»LåMZX»ZŸ[Hõ›ÿ\\ö[ô»]Y[¬àÀõ\›[ö[ô»Hò[ŸN¬à⁄›’ÿ\›
-	”õ»õ⁄XŸHÿ\\ôYà\LåÃéQëLà»\H[›\à[ú›Ÿ\ãâ N¬àŸ]›]
-	⁄YIÀ	’\ZX»»[ú›Ÿ\â N¬àŸ]õ⁄XŸS[ŸJ
-N¬à’^
+function resolveQuestion(q){
+  if(q === '__PROF1__'){
+    const pool = QB.profession[S.profession] || QB.profession.general;
+    return pool[0] || QB.profession.general[0];
+  }
+  if(q === '__PROF2__'){
+    const pool = QB.profession[S.profession] || QB.profession.general;
+    return pool[1] || QB.profession.general[1];
+  }
+  if(q === '__KW__'){
+    for(const kw of S.detectedKeywords){
+      if(KEYWORD_FOLLOWUP[kw]) return KEYWORD_FOLLOWUP[kw].replace(/\{name\}/g, S.name);
+    }
+    // fallback to random lifestyle question
+    const fb = QB.lifestyle[Math.floor(Math.random()*QB.lifestyle.length)];
+    return fb;
+  }
+  return q;
+}
 
-N¬àô]\õé¬àBÇà€€ú›àHô]»‘ä
-N¬àãõ[ô»H	Ÿ[ãRSâŒ»ãò€€ù[ù[›\»Hò[ŸN»ãö[ù\ö[Tô\›[»HùYN»ãõX^[\õò]]ô\»HN¬à]€›ô\›[Hò[ŸN¬Çàãõ€úô\›[H
-JHOà¬à€›ô\›[HùYN¬àô\›\ù€›[ùH»À»ô\Ÿ]€›[ù\à€à›XÿŸ\‹Ÿù[ÿ\\ôBà]ö[ò[»H	…À[ù\ö[HH	…Œ¬àõ‹ä]HHKúô\›[[ô^»HKúô\›[Àõ[ô›»J  ^¬àYäKúô\›[÷⁄WKö\—ö[ò[
-Hö[ò[»
-œHKúô\›[÷⁄WVÃKùò[úÿ‹ö\
-»	»	Œ¬à[ŸH[ù\ö[H
-œHKúô\›[÷⁄WVÃKùò[úÿ‹ö\¬àBàYäö[ò[ H›\úô[ùò[úÿ‹ö\
-œHö[ò[Œ¬à€€ú›\‹^HH
-›\úô[ùò[úÿ‹ö\
-»[ù\ö[JKùö[J
-N¬àŸ]›]
-	€\›[âÀ\‹^Bà»
-\‹^Kõ[ô›àÃà»	◊Låçâ»
-»\‹^Kú€XŸJMÃ
-Hà\‹^JBàà	”\›[ö[ô◊Låçàô\‹»Lå—éH›‹⁄[à€ôI N¬àN¬Çàãõ€ô\úõ‹àH
-JHOà¬àYäKô\úõ‹àOOH	€õÀ\‹YX⁄	»Kô\úõ‹àOOH	ÿXõ‹ùY	 Hô]\õé»À»€ô[ô⁄[[ôHô\›\ùàYäKô\úõ‹àOOH	€õ›X[›ŸY	»Kô\úõ‹àOOH	‹Ÿ\ùöXŸK[õ›X[›ŸY	 ^¬à\’\Ÿ\î›‹YHùYN»Àõ\›[ö[ô»Hò[ŸN¬à⁄›’ÿ\›
-	”ZX‹õ‹€ôHõÿ⁄ŸYà\LåÃéQëLà»\H[›\à[ú›Ÿ\ãâ N¬àŸ]›]
-	⁄YIÀ	’\ZX»»[ú›Ÿ\â N»Ÿ]õ⁄XŸS[ŸJ
-N»’^
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// STT
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function toggleMic(){
+  if(S.listening){ stopRec(); return; }
+  if(S.processing) return;
+  startRec();
+}
 
-N¬àBàÀ»ô]€‹öÀ€›\éà]€ô[ôô\›\ùàN¬Çàãõ€ô[ôH
+function startRec(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ showToast('Voice not supported. Please type your answer.'); toText(); return; }
+  // TTS is already finished (mic button was disabled during TTS).
+  // Small delay only as safety buffer for audio hardware release.
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  currentTranscript = '';
+  isUserStopped = false;
+  restartCount = 0;
+  S.listening = true;
+  setStat('listen', 'Starting mic\u2026');
+  setListenMode();
+  setTimeout(startRecInstance, 120);
+}
 
-HOà¬àYä\’\Ÿ\î›‹YTÀõ\›[ö[ô ^¬àÀ»\Ÿ\àô\‹ŸY›‹LåMõÿŸ\‹»⁄]ŸH]ôBàÀõ\›[ö[ô»Hò[ŸN¬à€€ú›ù[H›\úô[ùò[úÿ‹ö\ùö[J
-N¬à›\úô[ùò[úÿ‹ö\H	…Œ»ô\›\ù€›[ùH¬àYäù[	âàTÀúõÿŸ\‹⁄[ô ^¬à[ôU]\ò[òŸJù[
-N¬àH[ŸHYäTÀúõÿŸ\‹⁄[ô ^¬àYäYù[
-H⁄›’ÿ\›
-	”õ›[ô»ÿ\\ôYLåMX\ŸHûHYÿZ[à‹à\LåÃéQëLà»\Kâ N¬àŸ]›]
-	⁄YIÀ	’\ZX»»[ú›Ÿ\â N»Ÿ]õ⁄XŸS[ŸJ
-N¬àBàH[ŸH¬àÀ»]]ÀY[ôY
-[ôõ⁄Y]\Ÿ\»ô]ŸY[àŸ[ù[òŸ\ HLåMô\›\ùàô\›\ù€›[ù
- Œ¬àŸ]›]
-	€\›[âÀ›\úô[ùò[úÿ‹ö\ùö[J
-Bà»
-›\úô[ùò[úÿ‹ö\õ[ô›àå»	◊Låçâ»
-»›\úô[ùò[úÿ‹ö\ú€XŸJMN
-Hà›\úô[ùò[úÿ‹ö\ùö[J
-JBàà	”\›[ö[ô◊Låçàô\‹»Lå—éH›‹⁄[à€ôI N¬àÀ»€ôŸ\à[^H⁄[àõ›[ô»ÿ[YH[à
-]Y[»⁄[õô[X^H›[ôHÿ\õZ[ô»\
-BàŸ][Y[›]
-›\ùôX“[ú›[òŸK€›ô\›[»MLàÕL
-N¬àBàN¬ÇàôX”ÿöàHé¬àû^»ãú›\ù
+// Restart-loop: continuous=false (reliable on Android).
+// onend auto-restarts until user presses Stop.
+function startRecInstance(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR || isUserStopped || !S.listening) return;
 
-N»Xÿ]⁄
-J^¬à⁄›’ÿ\›
-	–€›[õ››\ùZXÀàX\ŸH\Kâ N¬àÀõ\›[ö[ô»Hò[ŸN»’^
+  if(restartCount >= MAX_RESTARTS){
+    // Too many empty cycles \u2014 mic likely not capturing audio
+    S.listening = false;
+    showToast('No voice captured. Tap \u2328\uFE0F to type your answer.');
+    setStat('idle','Tap mic to answer');
+    setVoiceMode();
+    toText();
+    return;
+  }
 
-N¬àBüBÇôù[ò›[€à›‹ôX 
-^¬à\’\Ÿ\î›‹YHùYN¬àÀõ\›[ö[ô»Hò[ŸN¬àôX”ÿöà	âàôX”ÿöãú›‹
+  const r = new SR();
+  r.lang = 'en-IN'; r.continuous = false; r.interimResults = true; r.maxAlternatives = 1;
+  let gotResult = false;
 
-N¬üBÇôù[ò›[€à›XõZ]^
+  r.onresult = (e) => {
+    gotResult = true;
+    restartCount = 0; // reset counter on successful capture
+    let finals = '', interim = '';
+    for(let i = e.resultIndex; i < e.results.length; i++){
+      if(e.results[i].isFinal) finals += e.results[i][0].transcript + ' ';
+      else interim += e.results[i][0].transcript;
+    }
+    if(finals) currentTranscript += finals;
+    const display = (currentTranscript + interim).trim();
+    setStat('listen', display
+      ? (display.length > 72 ? '\u2026' + display.slice(-70) : display)
+      : 'Listening\u2026 press \u23F9 Stop when done');
+  };
 
-^¬à€€ú›àHÿ›[Y[ùôŸ][[Y[ùûRY
-	›[ú]	 Kùò[YKùö[J
-N¬àYä]àÀúõÿŸ\‹⁄[ô Hô]\õé¬àÿ›[Y[ùôŸ][[Y[ùûRY
-	›[ú]	 Kùò[YHH	…Œ¬à[ôU]\ò[òŸJäN¬üBÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLãÀ»”‘ëNàì–—T‘»UTêSê—BãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLò\ﬁ[ò»ù[ò›[€à[ôU]\ò[òŸJò] ^¬àYä\ò]Àùö[J
-JHô]\õé¬àÀúõÿŸ\‹⁄[ô»HùYN¬àŸ]›]
-	‹õÿ…À	–⁄X⁄⁄[ô»[›\à[ô€\⁄ããâ N¬àŸ]\ÿXõY[ŸJ
-N¬ÇàÀ»⁄›»\Ÿ\à[ú›Ÿ\àùXòõBà⁄›–[ú›Ÿ\êùXòõJò] N¬ÇàÀ»]X›õŸô\‹⁄[€à	àŸ^]€‹ô»úõ€H\»[ú›Ÿ\Çà]X›õŸô\‹⁄[€äò] N¬à]X›Ÿ^]€‹ô ò] N¬ÇàÀ»⁄X⁄»⁄‹ù[ú›Ÿ\ú¬à€€ú›€‹ô€›[ùHò]Àùö[J
-Kú‹]
-◊ À Kõ[ô›¬àÀù›[€‹ô»
-œH€‹ô€›[ù¬ÇàÀ»\H[ôX[àù[\»ö\ú›à€€ú›[ôX[í\‹›Y\»H\R[ôX[îù[\ ò] N¬ÇàÀ»ÿ[[ô›XYŸU€€à]X]⁄\»H◊N¬àû^»X]⁄\»H]ÿZ]⁄X⁄”[ô›XYŸU€€
-ò] N»Bàÿ]⁄
-J^» à[ô›XYŸU€€Ÿôõ[ôHLåM\ŸH[ôX[àù[\»€õH
-ã»BÇàÀ»⁄õ€YHùZ[Z[àRH
-Ÿ[Z[öHò[õ HLåM^òH‹ò[[X\à⁄X⁄»⁄[à›\à⁄X⁄Ÿ\ú»Z\‹»\úõ‹ú¬à]Ÿ[Z[öQ\úõ‹ú»H◊N¬àû^»Ÿ[Z[öQ\úõ‹ú»H]ÿZ]⁄X⁄—Ÿ[Z[öSò[õ ò] N»Xÿ]⁄
-J^ﬂBÇàÀ»ÿ€‹ôBà€€ú››[\úê€›[ùH[ôX[í\‹›Y\Àõ[ô›
-»X]⁄\Àõ[ô›¬à€€ú›‹ÿ€‹ôHHX]õX^
-X]õZ[äLLH
-›[\úê€›[ù»X]õX^
-€‹ô€›[ùJJH
-àL
-JN¬àÀô‹ò[[X\îÿ€‹ô\Àú\⁄
-‹ÿ€‹ôJN¬àÀù›[\úõ‹ú»
-œH›[\úê€›[ù¬ÇàÀ»òX⁄»\úõ‹à\\¬àX]⁄\Àôõ‹ëXX⁄
-HOà¬à€€ú›ÿ]HKúù[H	âàKúù[Kòÿ]Y€‹ûH»Kúù[Kòÿ]Y€‹ûKõò[YHà	—‹ò[[X\âŒ¬àÀô\úõ‹ï\\÷ÿÿ]HH
-Àô\úõ‹ï\\÷ÿÿ]_
-H
-»N¬àJN¬àYä[ôX[í\‹›Y\Àõ[ô›
-^»Àô\úõ‹ï\\÷…“[ôX[à[ô€\⁄	◊HH
-Àô\úõ‹ï\\÷…“[ôX[à[ô€\⁄	◊_
-H
-»[ôX[í\‹›Y\Àõ[ô›»BÇàÀ»ùZ[€‹úôX›Y^à€€ú›€‹úôX›YHùZ[€‹úôX›Y
-ò]ÀX]⁄\ N¬ÇàÀ»õÿÿXà›YŸŸ\›[€ú»õ‹àŸXZ»€‹ô»
-\ŸHNà[ÿ^\»⁄X⁄À][]\ŸH€õHõ‹à⁄‹ù\à[ú›Ÿ\ú Bà]õÿÿXí[ùH	…Œ¬àõÿÿXí[ùH]ÿZ]Ÿ]ô]\ï€‹ô
-ò] N¬ÇàÀ»›‹ôBàÀù]\ò[òŸ\Àú\⁄
-»ò]À€‹úôX›Y\úõ‹úŒà›[\úê€›[ùÿ€‹ôNà‹ÿ€‹ôHJN¬àÀúõÿŸ\‹⁄[ô»Hò[ŸN¬ÇàÀ»\‹^H€‹úôX›[€àÿ\ôà⁄›–€‹úôX›[€êÿ\ô
-ò]À€‹úôX›YX]⁄\À[ôX[í\‹›Y\ÀõÿÿXí[ùŸ[Z[öQ\úõ‹ú N¬à\]Q‹ò[[X\îÿ€‹ôJ
-N¬üBÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLãÀ»SëPSàïST»“P“¬ãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLôù[ò›[€à\R[ôX[îù[\ ^
-^¬à€€ú›\‹›Y\»H◊N¬àSëPSó‘ïSTÀôõ‹ëXX⁄
-ù[HOà¬à€€ú›HH^õX]⁄
-ù[KúôJN¬àYäJH\‹›Y\Àú\⁄
-»õ›[ôàVÃK\ŸŒàù[Kõ\ŸÀö^àù[Kôö^JN¬àJN¬àô]\õà\‹›Y\Œ¬üBÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLãÀ»Së’PQ—U””TBãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLò\ﬁ[ò»ù[ò›[€à⁄X⁄”[ô›XYŸU€€
-^
-^¬à€€ú›õŸHHô]»TìŸX\ò⁄\ò[\ »^[ô›XYŸNâŸ[ãQ–âÀ[òXõY€õNâŸò[ŸIÀ]ô[â‹X⁄ﬁI»JN¬à€€ú›ô\‹H]ÿZ]ô]⁄
-	⁄ŒãÀÿ\Kõ[ô›XYŸ]€€õ‹ôÀ›åãÿ⁄X⁄…À¬àY]Ÿâ‘‘’	ÀàXY\úŒû…–€€ù[ùU\IŒâÿ\Xÿ][€ãﬁ]››ÀYõ‹õK]\õ[ò€ŸY	ﬂKàõŸNàõŸKù‘›ö[ô 
-BàJN¬àYä\ô\‹õ⁄ Hô]\õà◊N¬à€€ú›]HH]ÿZ]ô\‹öú€€ä
-N¬àô]\õà
-]KõX]⁄\ﬂ◊JKôö[\äHOà¬à€€ú›YHKúù[H	âàKúù[KöY»Kúù[KöYà	…Œ¬àÀ»ö[\à›]›[K[€õH[ô⁄]\‹XŸHù[\¬à€€ú›⁄⁄\H…’“UT‘P—W‘ïSIÀ	’TTê–T—W‘—SïSê—W‘’Tï	À	—Só‘US’T…À	–””SPW‘TëSïT“T◊’“UT‘P—I◊N¬àô]\õà\⁄⁄\ö[ò€Y\ Y
-H	âàKúô\XŸ[Y[ù»	âàKúô\XŸ[Y[ùÀõ[ô›à¬àJN¬üBÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLãÀ»“ì”QHïRSRSàRH
-—SRSíHêSì HLåM‹ò[[X\à⁄X⁄»öXH⁄[ô›ÀòZKõ[ô›XYŸS[Ÿ[ãÀ»€õHX›]ôH[à⁄õ€YHLé
-»⁄]ùZ[Z[àRH[òXõY»⁄[[ùHõÀ[‹»›\ù⁄\ŸBãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLò\ﬁ[ò»ù[ò›[€à⁄X⁄—Ÿ[Z[öSò[õ ^
-^¬àû^¬àYä	›⁄[ô›ÀòZH]⁄[ô›ÀòZKõ[ô›XYŸS[Ÿ[
-Hô]\õà◊N¬à€€ú›]òZ[H]ÿZ]⁄[ô›ÀòZKõ[ô›XYŸS[Ÿ[ò]òZ[Xö[]J
-N¬àYä]òZ[OOH	€õ… Hô]\õà◊N¬à€€ú›Ÿ\‹⁄[€àH]ÿZ]⁄[ô›ÀòZKõ[ô›XYŸS[Ÿ[ò‹ôX]J¬àﬁ\›[Tõ€\à	÷[›H\ôH[à[ô€\⁄‹ò[[X\à⁄X⁄Ÿ\àõ‹à[ôX[à›Y[ù»X\õö[ô»[ô€\⁄àö[ô‹ò[[X\à\úõ‹ú»[àHŸ[ù[òŸHõ›öYYàô]\õà”ìHHî””à\úò^KàXX⁄\úõ‹àÿöôX›]\›]ôH\ŸHŸ^\Œà‹õ€ô»
-H[ò€‹úôX›€‹ô‹àò\ŸJKöY⁄
-H€‹úôX›€‹ô‹àò\ŸJK\Ÿ»
-€ôHŸ[ù[òŸHZ[à[ô€\⁄^[ò][€äKàYàHŸ[ù[òŸH\»õ»\úõ‹ú»ô]\õà◊Kà›]]õ›[ô»^Ÿ\Hî””à\úò^Kâ¬àJN¬à€€ú›ô\HH]ÿZ]Ÿ\‹⁄[€ãúõ€\
-	–⁄X⁄»\»Ÿ[ù[òŸNà	»
-»^
-N¬àŸ\‹⁄[€ãô\›õﬁJ
-N¬à€€ú›X]⁄Hô\KõX]⁄
-◊÷◊◊◊Jè◊K N¬àYä[X]⁄
-Hô]\õà◊N¬à€€ú›\úõ‹ú»Hî””ãú\úŸJX]⁄ÃJN¬àô]\õà\úò^Kö\–\úò^J\úõ‹ú H»\úõ‹ú»à◊N¬àXÿ]⁄
-J^»ô]\õà◊N»BüBÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLãÀ»UUÀP”‘îëP’ãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLôù[ò›[€àùZ[€‹úôX›Y
-^X]⁄\ ^¬àYä[X]⁄\Àõ[ô›
-Hô]\õà^¬à]ô\›[H^¬à€€ú›€‹ùYHÀããõX]⁄\◊Kú€‹ù
+  r.onerror = (e) => {
+    if(e.error === 'no-speech' || e.error === 'aborted') return; // onend will handle restart
+    if(e.error === 'not-allowed' || e.error === 'service-not-allowed'){
+      isUserStopped = true; S.listening = false;
+      showToast('Microphone blocked. Tap \u2328\uFE0F to type your answer.');
+      setStat('idle','Tap mic to answer'); setVoiceMode(); toText();
+    }
+    // network/other: let onend restart
+  };
 
-KäHOàãõŸôúŸ]HKõŸôúŸ]
-N¬à€‹ùYôõ‹ëXX⁄
-HOà¬àYäKúô\XŸ[Y[ù»	âàKúô\XŸ[Y[ù÷ÃJ^¬àô\›[Hô\›[ú€XŸJKõŸôúŸ]
-H
-»Kúô\XŸ[Y[ù÷ÃKùò[YH
-»ô\›[ú€XŸJKõŸôúŸ]
-»Kõ[ô›
-N¬àBàJN¬àô]\õàô\›[¬üBÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLãÀ»T—HàTêTêT—HíPH—SRSíHêSì¬ãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLò\ﬁ[ò»ù[ò›[€àŸ]\ò\ò\ŸJ^
-^¬àû^¬àYä]⁄[ô›ÀòZH]⁄[ô›ÀòZKõ[ô›XYŸS[Ÿ[
-Hô]\õà	…Œ¬à€€ú›]òZ[H]ÿZ]⁄[ô›ÀòZKõ[ô›XYŸS[Ÿ[ò]òZ[Xö[]J
-N¬àYä]òZ[OOH	€õ… Hô]\õà	…Œ¬à€€ú›Ÿ\‹⁄[€àH]ÿZ]⁄[ô›ÀòZKõ[ô›XYŸS[Ÿ[ò‹ôX]J¬àﬁ\›[Tõ€\à	÷[›H\ôHH[ù[[ô€\⁄‹ö][ô»€ÿX⁄õ‹à[ôX[à›Y[ùÀà⁄]ô[àHŸ[ù[òŸKõ›öYH”ëH[\õò]]ôHÿ^H»^ô\‹»Hÿ[YHYXH[à⁄[\\ã€X\ô\à[ô€\⁄àô]\õà”ìHH[\õò]]ôHŸ[ù[òŸKõ›[ô»[ŸKàŸY\]ò]\ò[[ô€€ùô\úÿ][€ò[à»õ›Y][›\»‹àXô[Àâ¬àJN¬à€€ú›ô\HH]ÿZ]Ÿ\‹⁄[€ãúõ€\
-	‘ô\ò\ŸH\»Ÿ[ù[òŸHYôô\ô[ùNà	»
-»^
-N¬àŸ\‹⁄[€ãô\›õﬁJ
-N¬à€€ú›[Hô\Kùö[J
-Kúô\XŸJ◊ñ»â◊LåX◊LåY_»â◊LåX◊LåYIŸÀ	… Kúô\XŸJ◊ä\ôH\ﬂ\ôWLåN\ﬂ[\õò]]ôNüûNü[›H€›[ÿ^Nü[\õò]]ô[Kô\ò\ŸYäW ã⁄K	… N¬àô]\õà
-[	âà[õ[ô›àH	âà[ù”›Ÿ\êÿ\ŸJ
-HOOH^ù”›Ÿ\êÿ\ŸJ
-JH»[à	…Œ¬àXÿ]⁄
-J^»ô]\õà	…Œ»BüBÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLãÀ»T—HNàTë”—Qì––PïSTñHT‘êQHPTãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLò€€ú›—PR◊’”‘ë»H¬à	Ÿ€€Ÿ	Œñ…Ÿ^Ÿ[[ù	À	€›]›[ô[ô…◊K	ÿòY	Œñ…ÿ⁄[[ô⁄[ô…À	‹õÿõ[X]X…◊Kà	€öXŸIŒñ…‹X\ÿ[ù	À	Ÿ[Y⁄ù[	◊K	ÿöY…Œñ…‹⁄Y€öYöXÿ[ù	À	‹›Xú›[ùX[	◊Kà	‹€X[	Œñ…€Z[ö[X[	À	ÿ€€\X›	◊K	⁄\IŒñ…›ö[Y	À	Ÿ[Y⁄Y	◊Kà	‹ÿY	Œñ…Ÿ\⁄X\ù[ôY	À	Ÿ\ÿ\⁄[ùY	◊Kùô\ûIŒñ…Ÿ^ô[Y[IÀ	‹ô[X\öÿXõI◊Kà	ŸŸ]	Œñ…€ÿùZ[âÀ	ÿX⁄Y]ôI◊K	€XZŸIŒñ…ÿ‹ôX]IÀ	Ÿ]ô[‹	◊Kà	›[ö…Œñ…ÿô[Y]ôIÀ	ÿ€€ú⁄Y\â◊K	‹ÿZY	Œñ…€Y[ù[€ôY	À	Ÿ^Z[ôY	◊Kà	›Ÿ[ù	Œñ…›ò]ô[Y	À	‹õÿŸYYY	◊K	€ZŸIŒñ…ÿ\ôX⁄X]IÀ	Ÿ[öõﬁI◊Kà	⁄€õ›…Œñ…›[ô\ú›[ô	À	‹ôX€Ÿ€ö\ŸI◊K	›ÿ[ù	Œñ…Ÿ\⁄\ôIÀ	ÿ\‹\ôI◊Kà	‹⁄›…Œñ…Ÿ[[€ú›ò]IÀ	⁄[\›ò]I◊K	⁄[	Œñ…ÿ\‹⁄\›	À	‹›\‹ù	◊Kà	›\ŸIŒñ…›][\ŸIÀ	ÿ\I◊K	Ÿ⁄]ôIŒñ…‹õ›öYIÀ	ÿ€€ùöXù]I◊Kà	›ZŸIŒñ…›[ô\ùZŸIÀ	‹\ú›YI◊K	Ÿö[ô	Œñ…Ÿ\ÿ€›ô\âÀ	⁄Y[ùYûI◊Kà	ÿ\⁄…Œñ…Ÿ[ú]Z\ôIÀ	‹ô\]Y\›	◊K	›[	Œñ…⁄[ôõ‹õIÀ	Ÿ^Z[â◊Kà	›€‹ö…Œñ…ÿ€€ùöXù]IÀ	ÿ€€Xõ‹ò]I◊K	€X\õâŒñ…ÿX‹]Z\ôIÀ	€X\›\â◊Kà	⁄\ô	Œñ…ÿ⁄[[ô⁄[ô…À	Ÿ[X[ô[ô…◊K	ŸX\ﬁIŒñ…‹›òZY⁄õ‹ùÿ\ô	À	€X[òYŸXXõI◊Kà	€ô]…Œñ…⁄[õõ›ò]]ôIÀ	ÿ€€ù[\‹ò\ûI◊K	€€	Œñ…Ÿ\›Xõ\⁄Y	À	Ÿ^\öY[òŸY	◊Kà	›ûIŒñ…ÿ][\	À	Ÿ[ôX]õ›\â◊K	‹›\ù	Œñ…⁄[ö]X]IÀ	ÿ€€[Y[òŸI◊Kà	⁄[\‹ù[ù	Œñ…Ÿ\‹Ÿ[ùX[	À	ÿ‹ùX⁄X[	◊K	⁄[ù\ô\›[ô…Œñ…Ÿò\ÿ⁄[ò][ô…À	ÿ€€\[[ô…◊Kà	‹õÿõ[IŒñ…ÿ⁄[[ôŸIÀ	€ÿú›X€I◊K	›[ô…Œñ…ÿ\‹X›	À	Ÿ[[Y[ù	◊Kà	€›	Œñ…ÿ€€ú⁄Y\òXõIÀ	‹›Xú›[ùX[	◊K	ÿô]\âŒñ…⁄[\õ›ôY	À	‹›\\ö[‹â◊Kà	ŸYôöX›[	Œñ…ÿ⁄[[ô⁄[ô…À	Ÿ[X[ô[ô…◊K	‹⁄[\IŒñ…‹›òZY⁄õ‹ùÿ\ô	À	ÿ€X\â◊Kà	Ÿò\›	Œñ…ŸYôöX⁄Y[ù	À	‹ò\Y	◊K	‹€›…Œñ…Ÿ‹òYX[	À	€YX\›\ôY	◊Kà	›[…Œñ…Ÿ\ÿ›\‹…À	ÿ€€[][öXÿ]I◊K	‹ŸYIŒñ…€ÿúŸ\ùôIÀ	‹ôX€Ÿ€ö\ŸI◊Kà	ÿ€€YIŒñ…ÿ\úö]ôIÀ	⁄õ⁄[â◊K	Ÿ€…Œñ…‹õÿŸYY	À	›ô[ù\ôI◊Kà	ŸôY[	Œñ…Ÿ^\öY[òŸIÀ	‹Ÿ[úŸI◊K	‹ô[Y[Xô\âŒñ…‹ôXÿ[	À	‹ôX€Ÿ€ö\ŸI◊Kà	ÿ⁄[ôŸIŒñ…⁄[\õ›ôIÀ	›ò[úŸõ‹õI◊K	⁄ŸY\	Œñ…€XZ[ùZ[âÀ	‹›\›Z[â◊BüN¬ÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLãÀ»USUT—HLåMëUTàì––PïSTñBãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLò\ﬁ[ò»ù[ò›[€àŸ]ô]\ï€‹ô
-^
-^¬àû^¬à€€ú›€‹ô»H^ùö[J
-Kú‹]
-◊ À N¬à€€ú›⁄⁄\H…›IÀ	ÿIÀ	ÿ[âÀ	⁄\…À	ÿ[IÀ	ÿ\ôIÀ	›ÿ\…À	›Ÿ\ôIÀ	⁄IÀ	€^IÀ	€YIÀ	⁄]	À	⁄[âÀ	€€âÀ	ÿ]	À	›…À	€ŸâÀ	ÿ[ô	À	ÿù]	À	Ÿõ‹âÀ	‹€…À	Ÿ…À	ŸY	À	€õ›	À	›\…À	›]	À	›⁄]	À	ﬁ[›IÀ	ﬁ[›\âÀ	›ŸIÀ	€›\âÀ	›^IÀ	›Z\âÀ	⁄\…À	⁄]ôIÀ	⁄Y	À	›⁄[	À	›€›[	À	ÿÿ[âÀ	ÿ€›[	À	‹⁄›[	À	€X^IÀ	€ZY⁄	À	ÿôIÀ	ÿôY[âÀ	ÿôZ[ô…◊N¬àÀ»\ŸHNà\ô€ŸYX\8†%ô\õÀX€‹›[ú›[ùàõ‹ä€€ú›»Ÿà€‹ô ^¬à€€ú›€HÀù”›Ÿ\êÿ\ŸJ
-Kúô\XŸJ÷◊òK^óKŸÀ	… N¬àYä€õ[ô›àà	âà\⁄⁄\ö[ò€Y\ €
-H	âà—PR◊’”‘ë÷›€J^¬à€€ú›[»H—PR◊’”‘ë÷›€N¬àô]\õà[ú›XYŸà8†'›õ€ôœâŸ\ÿ  _O‹›õ€ôœ∏†'KûNà›õ€ôœâÿ[Àöõ⁄[ä	œ‹›õ€ôœà‹à›õ€ôœâ _O‹›õ€ôœãò¬àBàBàÀ»][]\ŸHò[òX⁄»õ‹à€‹ô»õ›[à\ô€ŸYX\à€€ú›\ôŸ]H€‹ôÀôö[ô
-»OàÀõ[ô›à	âà\⁄⁄\ö[ò€Y\ Àù”›Ÿ\êÿ\ŸJ
-JJN¬àYä]\ôŸ]
-Hô]\õà	…Œ¬à€€ú›ô\‹H]ÿZ]ô]⁄
-ŒãÀÿ\Kô][]\ŸKò€€K›€‹ôœ€[IŸ[ò€ŸUTíP€€\€ô[ù
-\ôŸ]
-_IõX^Lÿ
-N¬àYä\ô\‹õ⁄ Hô]\õà	…Œ¬à€€ú›]HH]ÿZ]ô\‹öú€€ä
-N¬à€€ú›ô]\àH]Kôö[\äOàù€‹ôù”›Ÿ\êÿ\ŸJ
-HOOH\ôŸ]ù”›Ÿ\êÿ\ŸJ
-JN¬àYäô]\ãõ[ô›
-^¬àô]\õà[ú›XYŸà8†'›õ€ôœâŸ\ÿ \ôŸ]
-_O‹›õ€ôœ∏†'K[›H€›[[€»ÿ^Nà›õ€ôœâÿô]\ãú€XŸJäKõX\
-Oôù€‹ô
-Köõ⁄[ä	œ‹›õ€ôœã›õ€ôœâ _O‹›õ€ôœãò¬àBàXÿ]⁄
-J^ﬂBàô]\õà	…Œ¬üBÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLãÀ»ì—ëT‘“S”àUP’S”ÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLôù[ò›[€à]X›õŸô\‹⁄[€ä^
-^¬à€€ú›H^ù”›Ÿ\êÿ\ŸJ
-N¬àYä›XX⁄\üö[ò⁄\[õŸô\‹€‹üX›\ô\üYXÿ]‹üÿ⁄€€€€YŸ_XX⁄òX›[KÀù\›
-
-JHÀúõŸô\‹⁄[€èI›XX⁄\âŒ¬à[ŸHYä‹›Y[ù›YZ[ôﬂ›YZ[ôﬂ[ö]ô\ú⁄]_€\‹ﬂ^[_ÿ⁄€€Àù\›
-
-JHÀúõŸô\‹⁄[€èI‹›Y[ù	Œ¬à[ŸHYäŸ[ô⁄[ôY\ü]ô[‹\ü€Ÿùÿ\ô_]õŸ‹ò[[Y\üX⁄€Ÿ[ôÀÀù\›
-
-JHÀúõŸô\‹⁄[€èIŸ[ô⁄[ôY\âŒ¬à[ŸHYäŸÿ›‹üù\úŸ_YYXÿ[‹‹][\⁄X⁄X[üX[Àù\›
-
-JHÀúõŸô\‹⁄[€èIŸÿ›‹âŒ¬üBÇôù[ò›[€à]X›Ÿ^]€‹ô ^
-^¬à€€ú›H^ù”›Ÿ\êÿ\ŸJ
-N¬à€€ú›⁄X⁄‹»H…€]\⁄X…À	‹⁄[ô…¬vwVóF"r¬v7&ñ6∂WBr¬wñˆvr¬vwñ“r¬w&VFñÊrr¬v6ˆˆ∂ñÊrr¬wG&fV¬r¬wñÁFñÊrr¬vv&FV‚u”∞¢6ÜV6∑2Êf˜$V6ÇÜ∑r”‚≤ñbáBÊñÊ6«VFW2Ü∑ríbb2ÊFWFV7FVD∂Wóv˜&G2ÊñÊ6«VFW2Ü∑ríí2ÊFWFV7FVD∂Wóv˜&G2ÁW6ÇÜ∑rì≤“ì∞ß–†¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¢ÚÚDï5ƒê¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¶gVÊ7Fñˆ‚6Ü˜tÁ7vW$'V&&∆RáFWáBó∞¢6ˆÁ7B÷ñ‚“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw6÷ñ‚rì∞¢6ˆÁ7BV¬“Fˆ7V÷VÁBÊ7&VFTV∆V÷VÁBÇvFóbrì∞¢V¬Ê6∆74Ê÷R“v'V&&∆Rs∞¢V¬ÁFWáD6ˆÁFVÁB“FWáC∞¢÷ñ‚ÊVÊD6Üñ∆BÜV¬ì∞¢÷ñ‚Á67&ˆ∆≈F˜“÷ñ‚Á67&ˆ∆ƒÜVñváC∞ß–†¶gVÊ7Fñˆ‚6Ü˜t6˜'&V7Fñˆ‰6&Bá&r¬6˜'&V7FVB¬«D÷F6ÜW2¬ñÊFñ‰ó77VW2¬fˆ6$ÜñÁB¬vV÷ñÊîW'&˜'2ó∞¢vV÷ñÊîW'&˜'2“vV÷ñÊîW'&˜'2«¬µ”∞¢6ˆÁ7B÷ñ‚“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw6÷ñ‚rì∞¢6ˆÁ7BÜ4W'&˜'2“«D÷F6ÜW2Ê∆VÊwFÇ‚«¬ñÊFñ‰ó77VW2Ê∆VÊwFÇ‚«¬vV÷ñÊîW'&˜'2Ê∆VÊwFÇ‚∞†¢ñbÇÜ4W'&˜'2ó∞¢6ˆÁ7BV¬“Fˆ7V÷VÁBÊ7&VFTV∆V÷VÁBÇvFóbrì∞¢V¬Ê6∆74Ê÷R“vÊˆW'"s∞¢V¬ÊñÊÊW$ÖD‘¬“∆Fób6∆73“&ÊˆW'"÷ñ6Ú#Â«S#sS¬ˆFóc‡¢∆Fób6∆73“&ÊˆW'"◊GáB#‰ÊÚw&÷÷"W'&˜'2f˜VÊB¬ˆFóc‡¢∆Fób6∆73“&ÊˆW'"◊7V"#ÂvV∆¬FˆÊR¬G∂W62Ö2ÊÊ÷Ró“‚∂VW7V∂ñÊrÊGW&∆«í„¬ˆFócÊ∞¢÷ñ‚ÊVÊD6Üñ∆BÜV¬ì∞¢ÚÚ7V≤˜6óFófR6∂Ê˜v∆VFv÷VÁ@¢7V≤ÜvV∆¬FˆÊRGµ2ÊÊ÷W“ÊÚW'&˜'2f˜VÊB‚ì∞¢“V«6R∞¢6ˆÁ7B66&B“Fˆ7V÷VÁBÊ7&VFTV∆V÷VÁBÇvFóbrì∞¢66&BÊ6∆74Ê÷R“v66&Bs∞¢∆WBáF÷¬“∆Fób6∆73“&66&B◊FóF∆R#‰6˜'&V7Fñˆ„¬ˆFócÊ∞†¢ÚÚ6Ü˜rfó'7B÷¶˜"6˜'&V7Fñˆ‚&ˆ÷ñÊVÁF«ê¢6ˆÁ7Bfó'7D≈B“«D÷F6ÜW5≥”∞¢6ˆÁ7Bfó'7Dî‚“ñÊFñ‰ó77VW5≥”∞†¢ñbÜfó'7Dî‚ó∞¢6ˆÁ7Bw&ˆÊu'B“fó'7Dî‚Êf˜VÊC∞¢áF÷¬≥“∆Fób6∆73“&6W'"◊&˜r#„«7‚6∆73“&6W'"◊Ç#Â«S#ss¬˜7„„«7‚6∆73“&6W'"◊GáB#‚G∂W62á&ró”¬˜7„„¬ˆFócÊ∞¢ñbÜfó'7Dî‚ÊfóÇó∞¢6ˆÁ7BfóÜVB“&rÁ&W∆6RÜÊWr&VtWáÜW65&Ráw&ˆÊu'Bí¬vvírí¬fó'7Dî‚ÊfóÇì∞¢áF÷¬≥“∆Fób6∆73“&6ˆ≤◊&˜r#„«7‚6∆73“&6ˆ≤◊Ç#Â«S#s3¬˜7„„«7‚6∆73“&6ˆ≤◊GáB#‚G∂W62ÜfóÜVBó”¬˜7„„¬ˆFócÊ∞¢–¢áF÷¬≥“∆Fób6∆73“&7'V∆R#„«7G&ˆÊs‰ñÊFñ‚VÊv∆ó6É£¬˜7G&ˆÊs‚G∂W62Üfó'7Dî‚Ê◊6ró”¬ˆFócÊ∞¢“V«6RñbÜfó'7D≈Bó∞¢6ˆÁ7Bw&ˆÊr“&rÁ6∆ñ6RÜfó'7D≈BÊˆfg6WB¬fó'7D≈BÊˆfg6WB≤fó'7D≈BÊ∆VÊwFÇì∞¢6ˆÁ7BfóÇ“fó'7D≈BÁ&W∆6V÷VÁG5≥“Áf«VS∞¢6ˆÁ7B6DÊ÷R“fó'7D≈BÁ'V∆Rbbfó'7D≈BÁ'V∆RÊ6FVv˜'íÚfó'7D≈BÁ'V∆RÊ6FVv˜'íÊÊ÷R¢tw&÷÷"s∞¢áF÷¬≥“∆Fób6∆73“&6W'"◊&˜r#„«7‚6∆73“&6W'"◊Ç#Â«S#ss¬˜7„„«7‚6∆73“&6W'"◊GáB#‚G∂W62á&ró”¬˜7„„¬ˆFócÊ∞¢áF÷¬≥“∆Fób6∆73“&6ˆ≤◊&˜r#„«7‚6∆73“&6ˆ≤◊Ç#Â«S#s3¬˜7„„«7‚6∆73“&6ˆ≤◊GáB#‚G∂W62Ü6˜'&V7FVBó”¬˜7„„¬ˆFócÊ∞¢áF÷¬≥“∆Fób6∆73“&7'V∆R#„«7G&ˆÊs‚G∂W62Ü6DÊ÷Ró”£¬˜7G&ˆÊs‚G∂W62Üfó'7D≈BÊ÷W76vR«¬fó'7D≈BÁ6Ü˜'D÷W76vR«¬rró”¬ˆFócÊ∞¢“V«6RñbÜvV÷ñÊîW'&˜'2Ê∆VÊwFÇ‚ó∞¢6ˆÁ7BvR“vV÷ñÊîW'&˜'5≥”∞¢6ˆÁ7BfóÜVE6VÁFVÊ6R“vRÁw&ˆÊrÚ&rÁ&W∆6RÜÊWr&VtWáÜW65&RÜvRÁw&ˆÊrí¬vvírí¬vRÁ&ñváG«∆vRÁw&ˆÊrí¢&s∞¢áF÷¬≥“∆Fób6∆73“&6W'"◊&˜r#„«7‚6∆73“&6W'"◊Ç#Â«S#ss¬˜7„„«7‚6∆73“&6W'"◊GáB#‚G∂W62á&ró”¬˜7„„¬ˆFócÊ∞¢áF÷¬≥“∆Fób6∆73“&6ˆ≤◊&˜r#„«7‚6∆73“&6ˆ≤◊Ç#Â«S#s3¬˜7„„«7‚6∆73“&6ˆ≤◊GáB#‚G∂W62ÜfóÜVE6VÁFVÊ6Ró”¬˜7„„¬ˆFócÊ∞¢áF÷¬≥“∆Fób6∆73“&7'V∆R#„«7G&ˆÊsÂ«S#s#Çí7VvvW7Fñˆ„£¬˜7G&ˆÊs‚G∂W62ÜvRÊ◊6w«¬rró”¬ˆFócÊ∞¢–†¢ÚÚ6Ü˜rFFóFñˆÊ¬W'&˜'26˜VÁ@¢6ˆÁ7B÷˜&T6˜VÁB“«D÷F6ÜW2Ê∆VÊwFÇ≤ñÊFñ‰ó77VW2Ê∆VÊwFÇ“∞¢ñbÜ÷˜&T6˜VÁB‚ó∞¢áF÷¬≥“∆Fób6∆73“&7'V∆R"7Gñ∆S“&&˜&FW"÷6ˆ∆˜#ßf"Ç“◊v&‚ì∂6ˆ∆˜#ßf"Ç“◊v&‚í#‡¢«7G&ˆÊs‚≤G∂÷˜&T6˜VÁG“÷˜&Ró77VRG∂÷˜&T6˜VÁC„Úw2s¢rw”¬˜7G&ˆÊs‚ñ‚FÜó26VÁFVÊ6R„¬ˆFócÊ∞¢–†¢ÚÚfˆ6"ÜñÁ@¢ñbáfˆ6$ÜñÁBó∞¢áF÷¬≥“∆Fób6∆73“&7fˆ6"#„«7G&ˆÊsÂ«TCÉ4E«TD4fˆ6'V∆'ì£¬˜7G&ˆÊs‚G∑fˆ6$ÜñÁG”¬ˆFócÊ∞¢–†¢ÚÚ7V≤'WGFˆ‡¢ñbÜ6˜'&V7FVBbb6˜'&V7FVB”“&ró∞¢áF÷¬≥“∆'WGFˆ‚6∆73“&77V≤÷'F‚"ˆÊ6∆ñ6≥“'7V≤Çt6˜'&V7B6VÁFVÊ6S¢G∂6˜'&V7FVBÁ&W∆6RÇÚrˆr¬%≈¬r"ó“rí#Â«TCÉ4E«TDCÜV"6˜'&V7B6VÁFVÊ6S¬ˆ'WGFˆ„Ê∞¢–†¢66&BÊñÊÊW$ÖD‘¬“áF÷√∞¢ÚÚÜ6RC¢&á&6RfñvV÷ñÊíÊÊÚ(	B7ñÊ2¬VÊFVBvÜV‚&VGê¢ñbávñÊF˜rÊíbbvñÊF˜rÊíÊ∆ÊwVvT÷ˆFV¬ó∞¢6ˆÁ7Bá&6TFób“Fˆ7V÷VÁBÊ7&VFTV∆V÷VÁBÇvFóbrì∞¢á&6TFóbÊ6∆74Ê÷R“v7á&6Rs∞¢á&6TFóbÁ7Gñ∆RÊFó7∆í“vÊˆÊRs∞¢66&BÊVÊD6Üñ∆Báá&6TFóbì∞¢vWE&á&6Rá&ríÁFÜV‚Ü«B”‚∞¢ñbÜ«Bó∞¢á&6TFóbÊñÊÊW$ÖD‘¬“«7G&ˆÊsÔ	˘*G'í6ññÊs£¬˜7G&ˆÊs‚G∂W62Ü«Bó÷∞¢á&6TFóbÁ7Gñ∆RÊFó7∆í“rs∞¢–¢“ì∞¢–¢÷ñ‚ÊVÊD6Üñ∆BÜ66&Bì∞†¢ÚÚWFÚ◊7V≤6˜'&V7FVBfW'6ñˆ‡¢ñbÜ6˜'&V7FVBbb6˜'&V7FVB”“&ró∞¢6WEFñ÷V˜WBÇÇì”‚7V≤ÇuFÜR6˜'&V7B6VÁFVÊ6Ró3¢r≤6˜'&V7FVBí¬Cì∞¢–¢–†¢ÚÚ6Ü˜rÊWáB'WGFˆ‡¢6Ü˜tÊWáD'F‚Çì∞¢÷ñ‚Á67&ˆ∆≈F˜“÷ñ‚Á67&ˆ∆ƒÜVñváC∞ß–†¶gVÊ7Fñˆ‚6Ü˜tÊWáD'F‚Çó∞¢6ˆÁ7B&˜r“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwg&˜rrì∞¢&˜rÊñÊÊW$ÖD‘¬“ ¢∆'WGFˆ‚6∆73“&ÁáF'F‚"ˆÊ6∆ñ6≥“&ÊWáEVW7Fñˆ‚Çí#‰ÊWáBVW7Fñˆ‚«S#ì#¬ˆ'WGFˆ„‡¢∆'WGFˆ‚6∆73“&∂&'F‚"ˆÊ6∆ñ6≥“&VÊE6W76ñˆ‚Çí"FóF∆S“$VÊB6W76ñˆ‚#Â«S#4cì¬ˆ'WGFˆ„Ê∞ß–†¶gVÊ7Fñˆ‚ÊWáEVW7Fñˆ‚Çó∞¢2ÁñGÇ≤≥∞¢ñbÖ2ÁñGÇ„“2ÁVW7FñˆÁ2Ê∆VÊwFÇó≤VÊE6W76ñˆ‚Çì≤&WGW&„≤–¢&VÊFW%VW7Fñˆ‚Çì∞ß–†¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¢ÚÚEE0¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¶gVÊ7Fñˆ‚7V≤áGáBó∞¢ñbÇvñÊF˜rÁ7VV6Ö7ñÁFÜW6ó2í&WGW&„∞¢vñÊF˜rÁ7VV6Ö7ñÁFÜW6ó2Ê6Ê6V¬Çì∞¢6ˆÁ7BR“ÊWr7VV6Ö7ñÁFÜW6ó5WGFW&Ê6RáGáBì∞¢RÁ&FR“„És≤RÁóF6Ç“„≤RÊ∆Êr“vV‚‘î‚s∞¢vñÊF˜rÁ7VV6Ö7ñÁFÜW6ó2Á7V≤áRì∞ß–†¢ÚÚ7V≤VW7Fñˆ‚‰B∂VW÷ñ2'WGFˆ‚Fó6&∆VBVÁFñ¬EE2VÊG2‡¢ÚÚFÜó2ó27&óFñ6¬ˆ‚ÊG&ˆñC¢VFñÚÜ&Gv&R◊W7B&V∆V6R7V∂W ¢ÚÚ&Vf˜&R÷ñ2ñÁWBó2˜76ñ&∆R‚W6W"6ÊÊ˜BF÷ñ2FˆÚV&«í‡¶gVÊ7Fñˆ‚7VµVW7Fñˆ‚áGáBó∞¢ÚÚFó6&∆RFÜR÷ñ2'WGFˆ‚vÜñ∆R7V∂ñÊp¢6ˆÁ7BVÊ&∆T'F‚“Çí”‚∞¢6ˆÁ7B"“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇv÷ñ6'F‚rì∞¢ñbÜ"bb2Ê∆ó7FVÊñÊró≤"ÊFó6&∆VB“f«6S≤"Á7Gñ∆RÊ˜6óGí“rs≤–¢6WE7FBÇvñF∆Rr¬uF÷ñ2FÚÁ7vW"rì∞¢”∞†¢6ˆÁ7B'F‚“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇv÷ñ6'F‚rì∞¢ñbÜ'F‚ó≤'F‚ÊFó6&∆VB“G'VS≤'F‚Á7Gñ∆RÊ˜6óGí“s„Bs≤–¢6WE7FBÇvñF∆Rr¬u«TCÉ4E«TDCVW7Fñˆ‚7V∂ñÊu«S##brì∞†¢ñbÇvñÊF˜rÁ7VV6Ö7ñÁFÜW6ó2ó≤VÊ&∆T'F‚Çì≤&WGW&„≤–¢vñÊF˜rÁ7VV6Ö7ñÁFÜW6ó2Ê6Ê6V¬Çì∞†¢6ˆÁ7BR“ÊWr7VV6Ö7ñÁFÜW6ó5WGFW&Ê6RáGáBì∞¢RÁ&FR“„És≤RÁóF6Ç“„≤RÊ∆Êr“vV‚‘î‚s∞†¢ÚÚf∆∆&6≥¢VÊ&∆R÷ñ2gFW""6V6ˆÊG2÷ÇÜf˜"fW'í∆ˆÊrVW7FñˆÁ2ê¢6ˆÁ7Bf∆∆&6≤“6WEFñ÷V˜WBÜVÊ&∆T'F‚¬#ì∞¢RÊˆÊVÊB“Çí”‚≤6∆V%Fñ÷V˜WBÜf∆∆&6≤ì≤6WEFñ÷V˜WBÜVÊ&∆T'F‚¬#ì≤”∞¢RÊˆÊW'&˜"“Çí”‚≤6∆V%Fñ÷V˜WBÜf∆∆&6≤ì≤VÊ&∆T'F‚Çì≤”∞†¢vñÊF˜rÁ7VV6Ö7ñÁFÜW6ó2Á7V≤áRì∞ß–†¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¢ÚÚTí5DDRÑT≈U%0¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¶gVÊ7Fñˆ‚6WE7FBÜ÷ˆFR¬∆&V¬ó∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw7FF∆&¬ríÁFWáD6ˆÁFVÁB“∆&V√∞¢Fˆ7V÷VÁBÁVW'ï6V∆V7F˜$∆¬ÇrÊ&"ríÊf˜$V6ÇÜ"”‚"Ê6∆74∆ó7BÁFˆvv∆RÇvˆ‚r¬÷ˆFS””“v∆ó7FV‚ríì∞ß–†¶gVÊ7Fñˆ‚6WEfˆñ6T÷ˆFRÇó∞¢6ˆÁ7Bg&˜r“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwg&˜rrì∞¢g&˜rÊñÊÊW$ÖD‘¬“ ¢∆'WGFˆ‚6∆73“&÷ñ6'F‚"ñC“&÷ñ6'F‚"ˆÊ6∆ñ6≥“'Fˆvv∆T÷ñ2Çí#‡¢«7‚ñC“&÷ñ6ñ6Ú#Â«TCÉ45«TDdC¬˜7„„«7‚ñC“&÷ñ6∆&¬#Â7V≤Á7vW#¬˜7„‡¢¬ˆ'WGFˆ„‡¢∆'WGFˆ‚6∆73“&∂&'F‚"ˆÊ6∆ñ6≥“'FıFWáBÇí"FóF∆S“%GóRñÁ7FVB#Â«S#3#Ö«TdSc¬ˆ'WGFˆ„Ê∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwG&˜rríÁ7Gñ∆RÊFó7∆í“vÊˆÊRs∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwg&˜rríÁ7Gñ∆RÊFó7∆í“vf∆WÇs∞ß–†¶gVÊ7Fñˆ‚6WD∆ó7FV‰÷ˆFRÇó∞¢6ˆÁ7Bg&˜r“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwg&˜rrì∞¢g&˜rÊñÊÊW$ÖD‘¬“ ¢∆'WGFˆ‚6∆73“&÷ñ6'F‚«7F‚"ñC“&÷ñ6'F‚"ˆÊ6∆ñ6≥“'Fˆvv∆T÷ñ2Çí#‡¢«7„Â«S#4cì¬˜7„„«7„Â7F˜¬˜7„‡¢¬ˆ'WGFˆ„Ê∞ß–†¶gVÊ7Fñˆ‚6WDFó6&∆VD÷ˆFRÇó∞¢6ˆÁ7Bg&˜r“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwg&˜rrì∞¢g&˜rÊñÊÊW$ÖD‘¬“∆'WGFˆ‚6∆73“&÷ñ6'F‚"Fó6&∆VB7Gñ∆S“&˜6óGì¢„B#‡¢«7„Â«S#3#¬˜7„„«7„‰6ÜV6∂ñÊr‚‚„¬˜7„„¬ˆ'WGFˆ„Ê∞ß–†¶gVÊ7Fñˆ‚FıFWáBÇó∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwg&˜rríÁ7Gñ∆RÊFó7∆í“vÊˆÊRs∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwG&˜rríÁ7Gñ∆RÊFó7∆í“vf∆WÇs∞¢6WEFñ÷V˜WBÇÇì”ÊFˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwFñÁWBríÊfˆ7W2Çí¬ì∞ß–†¶gVÊ7Fñˆ‚Fıfˆñ6RÇó∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwG&˜rríÁ7Gñ∆RÊFó7∆í“vÊˆÊRs∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwg&˜rríÁ7Gñ∆RÊFó7∆í“vf∆WÇs∞ß–†¶gVÊ7Fñˆ‚WFFTw&÷÷%66˜&RÇó∞¢6ˆÁ7B66˜&W2“2Êw&÷÷%66˜&W3∞¢ñbÇ66˜&W2Ê∆VÊwFÇó≤Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw62÷rríÁFWáD6ˆÁFVÁC“u«S#Bs≤&WGW&„≤–¢6ˆÁ7Bfr“66˜&W2Á&VGV6RÇÜ∆"ì”Ê∂"√í˜66˜&W2Ê∆VÊwFÉ∞¢6ˆÁ7BV¬“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw62÷rrì∞¢V¬ÁFWáD6ˆÁFVÁB“frÁFÙfóÜVBÉì∞¢V¬Á7Gñ∆RÊ6ˆ∆˜"“fs„”sÚwf"Ç“÷ˆ≤ís¶fs„”SÚwf"Ç“◊v&‚ís¢wf"Ç“÷W'"ís∞ß–†¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¢ÚÚ4U54îÙ‚$Uı%@¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¶gVÊ7Fñˆ‚VÊE6W76ñˆ‚Çó∞¢ñbÇ2ÁWGFW&Ê6W2Ê∆VÊwFÇó≤ÊWu6W76ñˆ‚Çì≤&WGW&„≤–¢6fU7G&V≤Çì∞†¢6ˆÁ7Bfr“2Êw&÷÷%66˜&W2Ê∆VÊwFÄ¢Ú2Êw&÷÷%66˜&W2Á&VGV6RÇÜ∆"ì”Ê∂"√íı2Êw&÷÷%66˜&W2Ê∆VÊwFÇ¢∞†¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw"◊66˜&RríÁFWáD6ˆÁFVÁB“frÁFÙfóÜVBÉì∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw"◊66˜&RríÁ7Gñ∆RÊ6ˆ∆˜"“fs„”sÚwf"Ç“÷ˆ≤ís¶fs„”SÚwf"Ç“◊v&‚ís¢wf"Ç“÷W'"ís∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw"◊GW&Á2ríÁFWáD6ˆÁFVÁB“2ÁWGFW&Ê6W2Ê∆VÊwFÉ∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw"◊v˜&G2ríÁFWáD6ˆÁFVÁB“2ÁF˜F≈v˜&G3∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw"÷W'&˜'2ríÁFWáD6ˆÁFVÁB“2ÁF˜FƒW'&˜'3∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw"◊7G&V≤ríÁFWáD6ˆÁFVÁB“2Á7G&V≥∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw&Ê÷RríÁFWáD6ˆÁFVÁB“w&VB6W76ñˆ‚¬Gµ2ÊÊ÷W“∞†¢ÚÚÜ6R#¢66˜&RG&VÊBg2&Wfñ˜W26W76ñˆ‡¢6ˆÁ7B&We66˜&R“∆ˆD∆7E66˜&RÇì∞¢6ˆÁ7BG&VÊDV¬“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw"◊G&VÊBrì∞¢ñbá&We66˜&R”“ÁV∆¬bbG&VÊDV¬ó∞¢6ˆÁ7BFñfb“fr“&We66˜&S∞¢6ˆÁ7B'6Fñfb“÷FÇÊ'2ÜFñfbíÁFÙfóÜVBÉì∞¢ñbÜFñfb‚„"ó∞¢G&VÊDV¬ÊñÊÊW$ÖD‘¬“«7‚7Gñ∆S“&fˆÁB◊6ó¶S£áÇ#Ó)k#¬˜7„„«7‚6∆73“''GG&VÊB◊W#Ï*ñ◊&˜fVB'íG∂'6Fñfg“G2g&ˆ“∆7B6W76ñˆ‚ÇG∑&We66˜&RÁFÙfóÜVBÉó“Ûì¬˜7„Ê∞¢“V«6RñbÜFñfb¬”„"ó∞¢G&VÊDV¬ÊñÊÊW$ÖD‘¬“«7‚7Gñ∆S“&fˆÁB◊6ó¶S£áÇ#Ó)k√¬˜7„„«7‚6∆73“''GG&VÊB÷F‚#Ï*66˜&Rv2G∂'6Fñfg“∆˜vW"FÜ‚∆7B6W76ñˆ‚ÇG∑&We66˜&RÁFÙfóÜVBÉó“Ûì¬˜7„Ê∞¢“V«6R∞¢G&VÊDV¬ÊñÊÊW$ÖD‘¬“«7‚7Gñ∆S“&fˆÁB◊6ó¶S£áÇ#Ó(i#¬˜7„„«7‚6∆73“''GG&VÊB÷W#Ï*6ñ÷ñ∆"FÚ∆7B6W76ñˆ‚ÇG∑&We66˜&RÁFÙfóÜVBÉó“Ûì¬˜7„Ê∞¢–¢G&VÊDV¬Á7Gñ∆RÊFó7∆í“vf∆WÇs∞¢“V«6RñbáG&VÊDV¬ó∞¢G&VÊDV¬Á7Gñ∆RÊFó7∆í“vÊˆÊRs∞¢–¢6fU66˜&TÜó7F˜'íÜfrì∞†¢ÚÚW'&˜"'&V∂F˜v‡¢6ˆÁ7B&B“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw"÷'&V∂F˜v‚rì∞¢6ˆÁ7BGóW2“ˆ&¶V7BÊVÁG&ñW2Ö2ÊW'&˜%GóW2íÁ6˜'BÇÜ∆"ì”Ê%≥“÷≥“ì∞¢ñbáGóW2Ê∆VÊwFÇó∞¢&BÊñÊÊW$ÖD‘¬“GóW2Ê÷ÇÖ∂≤«e“ì”‡¢∆Fób6∆73“'&&W'"#„«7‚6∆73“'&&W'"÷Ê÷R#‚G∂W62Ü≤ó”¬˜7„„«7‚6∆73“'&&W'"÷6˜VÁB#‚G∑g”¬˜7„„¬ˆFócÊ ¢íÊ¶ˆñ‚Çrrì∞¢“V«6R∞¢&BÊñÊÊW$ÖD‘¬“∆Fób7Gñ∆S“&6ˆ∆˜#ßf"Ç“÷ˆ≤ì∂fˆÁB◊6ó¶S£GÉ∑FFñÊs£áÇ#‰ÊÚW'&˜'2&V6˜&FVB«S#BWÜ6V∆∆VÁB¬ˆFócÊ∞¢–†¢ÚÚ÷˜FófFñˆÊ¬÷W76vP¢6ˆÁ7B◊6w2“∞¢ñ˜W"fW&vRw&÷÷"66˜&Ró2G∂frÁFÙfóÜVBÉó“Û‚G∂fs„”sÚtWÜ6V∆∆VÁBv˜&≤s¢t∂VW&7Fñ6ñÊrFñ«íw÷¿¢ñ˜R7ˆ∂RGµ2ÁF˜F≈v˜&G7“v˜&G2ñ‚Gµ2ÁWGFW&Ê6W2Ê∆VÊwFá“GW&Á2‚WfW'í&7Fñ6R6W76ñˆ‚'Vñ∆G2f«VVÊ7íÊ¿¢Gµ2ÁF˜FƒW'&˜'3”””Úu¶W&Úw&÷÷"W'&˜'2«S#B˜WG7FÊFñÊrs¢tfˆ7W2ˆ‚6˜'&V7FñÊrFÜRW'&˜"GóW26Ü˜v‚&˜fR‚w÷¿¢6ˆÁ6ó7FVÊ7íó2FÜR∂WíFÚf«VVÊ7í‚&7Fñ6Rvñ‚Fˆ÷˜'&˜rFÚ÷ñÁFñ‚ñ˜W"Gµ2Á7G&V∑“÷Fí7G&V≤ ¢”∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw"÷◊6rríÁFWáD6ˆÁFVÁB“◊6w5¥÷FÇÊf∆ˆ˜"Ñ÷FÇÁ&ÊFˆ“Çí¶◊6w2Ê∆VÊwFÇï”∞†¢ÚÚ7vóF6ÇFÚ&W˜'B67&VV‡¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw72ríÊ6∆74∆ó7BÁ&V÷˜fRÇvˆ‚rì∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw7"ríÊ6∆74∆ó7BÊFBÇvˆ‚rì∞ß–†¶gVÊ7Fñˆ‚&7Fñ6Tvñ‚Çó∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw7"ríÊ6∆74∆ó7BÁ&V÷˜fRÇvˆ‚rì∞¢2ÁVW7FñˆÁ2“'Vñ∆EVW7FñˆÁ2Çì∞¢2ÁñGÇ“≤2ÁWGFW&Ê6W2“µ”≤2ÁF˜F≈v˜&G2“∞¢2ÁF˜FƒW'&˜'2“≤2ÊW'&˜%GóW2“∑”≤2Êw&÷÷%66˜&W2“µ”∞¢2ÊFWFV7FVD∂Wóv˜&G2“µ”≤2Á&ˆfW76ñˆ‚“vvVÊW&¬s∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw72ríÊ6∆74∆ó7BÊFBÇvˆ‚rì∞¢&VÊFW%VW7Fñˆ‚Çì∞ß–†¶gVÊ7Fñˆ‚ÊWu6W76ñˆ‚Çó∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw7"ríÊ6∆74∆ó7BÁ&V÷˜fRÇvˆ‚rì∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw72ríÊ6∆74∆ó7BÁ&V÷˜fRÇvˆ‚rì∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw7rríÁ7Gñ∆RÊFó7∆í“vf∆WÇs∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇw6÷ñ‚ríÊñÊÊW$ÖD‘¬“rs∞ß–†¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¢ÚÚ5E$T≤Ü∆ˆ6≈7F˜&vRê¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¶gVÊ7Fñˆ‚6fU7G&V≤Çó∞¢G'ó∞¢6ˆÁ7BFˆFí“ÊWrFFRÇíÁFÙFFU7G&ñÊrÇì∞¢6ˆÁ7B∆7B“∆ˆ6≈7F˜&vRÊvWDóFV“Çwfµˆ∆7FFFRrì∞¢∆WB7G&V≤“'6TñÁBÜ∆ˆ6≈7F˜&vRÊvWDóFV“Çwfµ˜7G&V≤ró«¬srì∞¢ñbÜ∆7B””“FˆFíó≤Ú¢6÷RFí¢Ú–¢V«6RñbÜ∆7BbbÊWrFFRáFˆFíí÷ÊWrFFRÜ∆7Bí√“ÉcCó≤7G&V≤≤≥≤–¢V«6W≤7G&V≤“≤–¢∆ˆ6≈7F˜&vRÁ6WDóFV“Çwfµ˜7G&V≤r¬7G&V≤ì∞¢∆ˆ6≈7F˜&vRÁ6WDóFV“Çwfµˆ∆7FFFRr¬FˆFíì∞¢2Á7G&V≤“7G&V≥∞¢÷6F6ÇÜRó≤2Á7G&V≤“≤–ß–†¶gVÊ7Fñˆ‚∆ˆE7G&V≤Çó∞¢G'ó∞¢6ˆÁ7BFˆFí“ÊWrFFRÇíÁFÙFFU7G&ñÊrÇì∞¢6ˆÁ7B∆7B“∆ˆ6≈7F˜&vRÊvWDóFV“Çwfµˆ∆7FFFRrì∞¢∆WB7G&V≤“'6TñÁBÜ∆ˆ6≈7F˜&vRÊvWDóFV“Çwfµ˜7G&V≤ró«¬srì∞¢ñbÇ∆7B«¬ÊWrFFRáFˆFíí÷ÊWrFFRÜ∆7Bí‚ÉcCí7G&V≤“∞¢2Á7G&V≤“7G&V≥∞¢÷6F6ÇÜRó≤2Á7G&V≤“≤–ß–†¢ÚÚ)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¢ÚÚÑ4R#¢4U54îÙ‚44ı$RÑï5Dı%íÜ∆ˆ6≈7F˜&vRê¢ÚÚ)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y)Y ¶gVÊ7Fñˆ‚6fU66˜&TÜó7F˜'íá66˜&Ró∞¢G'ó∞¢6ˆÁ7BÜó7B“•4Ù‚Á'6RÜ∆ˆ6≈7F˜&vRÊvWDóFV“Çwfµ˜66˜&W2ró«¬uµ“rì∞¢Üó7BÁW6Çá≤3¢÷FÇÁ&˜VÊBá66˜&R£íÛ¬C¢ÊWrFFRÇíÁFÙFFU7G&ñÊrÇí“ì∞¢ñbÜÜó7BÊ∆VÊwFÇ‚íÜó7BÁ6ÜñgBÇì≤ÚÚ∂VW∆7B6W76ñˆÁ0¢∆ˆ6≈7F˜&vRÁ6WDóFV“Çwfµ˜66˜&W2r¬•4Ù‚Á7G&ñÊvñgíÜÜó7Bíì∞¢÷6F6ÇÜRó∑–ß–¶gVÊ7Fñˆ‚∆ˆD∆7E66˜&RÇó∞¢G'ó∞¢6ˆÁ7BÜó7B“•4Ù‚Á'6RÜ∆ˆ6≈7F˜&vRÊvWDóFV“Çwfµ˜66˜&W2ró«¬uµ“rì∞¢ñbÜÜó7BÊ∆VÊwFÇ¬"í&WGW&‚ÁV∆√∞¢&WGW&‚Üó7E∂Üó7BÊ∆VÊwFÇ”%“Á3≤ÚÚ6V6ˆÊB◊FÚ÷∆7B“&Wfñ˜W26W76ñˆ‡¢÷6F6ÇÜRó≤&WGW&‚ÁV∆√≤–ß–†¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¢ÚÚDÙ5@¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¶∆WBFˆ7EFñ÷W#∞¶gVÊ7Fñˆ‚6Ü˜uFˆ7BÜ◊6ró∞¢6ˆÁ7BV¬“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwFˆ7Brì∞¢V¬ÁFWáD6ˆÁFVÁB“◊6s∞¢V¬Ê6∆74∆ó7BÊFBÇvˆ‚rì∞¢6∆V%Fñ÷V˜WBáFˆ7EFñ÷W"ì∞¢Fˆ7EFñ÷W"“6WEFñ÷V˜WBÇÇì”‚V¬Ê6∆74∆ó7BÁ&V÷˜fRÇvˆ‚rí¬Cì∞ß–†¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¢ÚÚUDî≈0¢ÚÚ«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS«S#SS ¶gVÊ7Fñˆ‚W62á2ó≤6ˆÁ7BC÷Fˆ7V÷VÁBÊ7&VFTV∆V÷VÁBÇvFóbrì∂BÁFWáD6ˆÁFVÁC◊7«¬rs∑&WGW&‚BÊñÊÊW$ÖD‘√≤–¶gVÊ7Fñˆ‚W65&Rá2ó≤&WGW&‚2Á&W∆6RÇı≤‚¢≥ı‚G∑“Çó≈µ≈’≈≈“ˆr¬u≈¬Bbrì≤–†¢ÚÚñÊóB6ÜV6≤≤Ü6R3¢í&FvRFWFV7Fñˆ‡ßvñÊF˜rÊˆÊ∆ˆB“7ñÊ2gVÊ7Fñˆ‚Çó∞¢ñbÇávñÊF˜rÂ7VV6Ö&V6ˆvÊóFñˆÁ««vñÊF˜rÁvV&∂óE7VV6Ö&V6ˆvÊóFñˆ‚íó∞¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwvg&VRríÊñÊÊW$ÖD‘¬“u«S#s2w&÷÷"«S#r«S#s2fˆ6'V∆'í«S#r«S#s2fˆñ6RáGóR÷÷ˆFRˆ‚FÜó2'&˜w6W"ís∞¢–¢Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwvÊ÷RríÊfˆ7W2Çì∞†¢ÚÚÜ6R3¢'&˜w6W"íFWFV7Fñˆ‚&FvP¢6ˆÁ7B&FvR“Fˆ7V÷VÁBÊvWDV∆V÷VÁD'îñBÇwví÷&FvRrì∞¢ñbÜ&FvRó∞¢∆WBîˆ≤“f«6S∞¢ñbávñÊF˜rÊíbbvñÊF˜rÊíÊ∆ÊwVvT÷ˆFV¬ó∞¢G'ó∞¢6ˆÁ7Bfñ¬“vóBvñÊF˜rÊíÊ∆ÊwVvT÷ˆFV¬Êfñ∆&ñ∆óGíÇì∞¢ñbÜfñ¬”“vÊÚríîˆ≤“G'VS∞¢÷6F6ÇÜRó∑–¢–¢ñbÜîˆ≤ó∞¢&FvRÁFWáD6ˆÁFVÁB“u«S#s#ÇíVÊÜÊ6VBs∞¢&FvRÁ7Gñ∆RÊFó7∆í“vñÊ∆ñÊR÷f∆WÇs∞¢“V«6R∞¢&FvRÁFWáD6ˆÁFVÁB“u7FÊF&B÷ˆFRs∞¢&FvRÁ7Gñ∆RÊFó7∆í“vñÊ∆ñÊR÷f∆WÇs∞¢&FvRÁ7Gñ∆RÊ&6∂w&˜VÊB“w&v&É#√#√#¬„ís∞¢&FvRÁ7Gñ∆RÊ&˜&FW$6ˆ∆˜"“w&v&É#√#√#¬„#Rís∞¢&FvRÁ7Gñ∆RÊ6ˆ∆˜"“wf"Ç“÷◊WFVBís∞¢–¢–ß”∞£¬˜67&óC‡£¬ˆ&ˆGì‡£¬ˆáF÷√‡
+  r.onend = () => {
+    if(isUserStopped || !S.listening){
+      // User pressed Stop \u2014 process what we have
+      S.listening = false;
+      const full = currentTranscript.trim();
+      currentTranscript = ''; restartCount = 0;
+      if(full && !S.processing){
+        handleUtterance(full);
+      } else if(!S.processing){
+        if(!full) showToast('Nothing captured \u2014 please try again or tap \u2328\uFE0F to type.');
+        setStat('idle','Tap mic to answer'); setVoiceMode();
+      }
+    } else {
+      // Auto-ended (Android pauses between sentences) \u2014 restart
+      restartCount++;
+      setStat('listen', currentTranscript.trim()
+        ? (currentTranscript.length > 60 ? '\u2026' + currentTranscript.slice(-58) : currentTranscript.trim())
+        : 'Listening\u2026 press \u23F9 Stop when done');
+      // Longer delay when nothing came in (audio channel may still be warming up)
+      setTimeout(startRecInstance, gotResult ? 150 : 350);
+    }
+  };
+
+  recObj = r;
+  try{ r.start(); }catch(e){
+    showToast('Could not start mic. Please type.');
+    S.listening = false; toText();
+  }
+}
+
+function stopRec(){
+  isUserStopped = true;
+  S.listening = false;
+  recObj && recObj.stop();
+}
+
+function submitText(){
+  const v = document.getElementById('tinput').value.trim();
+  if(!v || S.processing) return;
+  document.getElementById('tinput').value = '';
+  handleUtterance(v);
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// CORE: PROCESS UTTERANCE
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+async function handleUtterance(raw){
+  if(!raw.trim()) return;
+  S.processing = true;
+  setStat('proc','Checking your English...');
+  setDisabledMode();
+
+  // Show user answer bubble
+  showAnswerBubble(raw);
+
+  // Detect profession & keywords from this answer
+  detectProfession(raw);
+  detectKeywords(raw);
+
+  // Check short answers
+  const wordCount = raw.trim().split(/\s+/).length;
+  S.totalWords += wordCount;
+
+  // Apply Indian rules first
+  const indianIssues = applyIndianRules(raw);
+
+  // Call LanguageTool
+  let ltMatches = [];
+  try{ ltMatches = await checkLanguageTool(raw); }
+  catch(e){ /* LanguageTool offline \u2014 use Indian rules only */ }
+
+  // Chrome Built-in AI (Gemini Nano) \u2014 extra grammar check when other checkers miss errors
+  let geminiErrors = [];
+  try{ geminiErrors = await checkGeminiNano(raw); }catch(e){}
+
+  // Score
+  const totalErrCount = indianIssues.length + ltMatches.length;
+  const gscore = Math.max(0, Math.min(10, 10 - (totalErrCount /[Math.max(wordCount,1)) * 10));
+  S.grammarScores.push(gscore);
+  S.totalErrors += totalErrCount;
+
+  // Track error types
+  ltMatches.forEach(m => {
+    const cat = m.rule && m.rule.category ? m.rule.category.name : 'Grammar';
+    S.errorTypes[cat] = (S.errorTypes[cat]||0) + 1;
+  });
+  if(indianIssues.length){ S.errorTypes['Indian English'] = (S.errorTypes['Indian English']||0) + indianIssues.length; }
+
+  // Build corrected text
+  const corrected = buildCorrected(raw, ltMatches);
+
+  // Vocab suggestions for weak words (Phase 5: always check, Datamuse only for shorter answers)
+  let vocabHint = '';
+  vocabHint = await getBetterWord(raw);
+
+  // Store
+  S.utterances.push({ raw, corrected, errors: totalErrCount, score: gscore });
+  S.processing = false;
+
+  // Display correction card
+  showCorrectionCard(raw, corrected, ltMatches, indianIssues, vocabHint, geminiErrors);
+  updateGrammarScore();
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// INDIAN RULES CHECK
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function applyIndianRules(text){
+  const issues = [];
+  INDIAN_RULES.forEach(rule => {
+    const m = text.match(rule.re);
+    if(m) issues.push({ found: m[0], msg: rule.msg, fix: rule.fix });
+  });
+  return issues;
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// LANGUAGETOOL API
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+async function checkLanguageTool(text){
+  const body = new URLSearchParams({ text, language:'en-GB', enabledOnly:'false', level:'picky' });
+  const resp = await fetch('https://api.languagetool.org/v2/check',{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body: body.toString()
+  });
+  if(!resp.ok) return [];
+  const data = await resp.json();
+  return (data.matches||[]).filter(m => {
+    const id = m.rule && m.rule.id ? m.rule.id : '';
+    // Filter out style-only and whitespace rules
+    const skip = ['WHITESPACE_RULE','UPPERCASE_SENTENCE_START','EN_QUOTES','COMMA_PARENTHESIS_WHITESPACE'];
+    return !skip.includes(id) && m.replacements && m.replacements.length > 0;
+  });
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// CHROME BUILT-IN AI (GEMINI NANO) \u2014 grammar check via window.ai.languageModel
+// Only active in Chrome 128+ with built-in AI enabled; silently no-ops otherwise
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+async function checkGeminiNano(text){
+  try{
+    if(!window.ai || !window.ai.languageModel) return [];
+    const avail = await window.ai.languageModel.availability();
+    if(avail === 'no') return [];
+    const session = await window.ai.languageModel.create({
+      systemPrompt: 'You are an English grammar checker for Indian students learning English. Find grammar errors in the sentence provided. Return ONLY a JSON array. Each error object must have these keys: wrong (the incorrect word or phrase), right (the correct word or phrase), msg (one sentence plain English explanation). If the sentence has no errors return []. Output nothing except the JSON array.'
+    });
+    const reply = await session.prompt('Check this sentence: ' + text);
+    session.destroy();
+    const match = reply.match(/\[[\s\S]*?\]/);
+    if(!match) return [];
+    const errors = JSON.parse(match[0]);
+    return Array.isArray(errors) ? errors : [];
+  }catch(e){ return []; }
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// AUTO-CORRECT
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function buildCorrected(text, matches){
+  if(!matches.length) return text;
+  let result = text;
+  const sorted = [...matches].sort((a,b) => b.offset - a.offset);
+  sorted.forEach(m => {
+    if(m.replacements && m.replacements[0]){
+      result = result.slice(0, m.offset) + m.replacements[0].value + result.slice(m.offset + m.length);
+    }
+  });
+  return result;
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// PHASE 4: PARAPHRASE VIA GEMINI NANO
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+async function getParaphrase(text){
+  try{
+    if(!window.ai || !window.ai.languageModel) return '';
+    const avail = await window.ai.languageModel.availability();
+    if(avail === 'no') return '';
+    const session = await window.ai.languageModel.create({
+      systemPrompt: 'You are a helpful English writing coach for Indian students. Given a sentence, provide ONE alternative way to express the same idea in simpler, clearer English. Return ONLY the alternative sentence, nothing else. Keep it natural and conversational. Do not add quotes or labels.'
+    });
+    const reply = await session.prompt('Rephrase this sentence differently: ' + text);
+    session.destroy();
+    const alt = reply.trim().replace(/^["'\u201c\u201d]|["'\u201c\u201d]$/g,'').replace(/^(Here is|Here\u2019s|Alternative:|Try:|You could say:|Alternatively,|Rephrased:)\s*/i,'');
+    return (alt && alt.length > 5 && alt.toLowerCase() !== text.toLowerCase()) ? alt : '';
+  }catch(e){ return ''; }
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// PHASE 5: HARDCODED VOCABULARY UPGRADE MAP
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+const WEAK_WORDS = {
+  'good':['excellent','outstanding'],'bad':['challenging','problematic'],
+  'nice':['pleasant','delightful'],'big':['significant','substantial'],
+  'small':['minimal','compact'],'happy':['thrilled','delighted'],
+  'sad':['disheartened','disappointed'],'very':['extremely','remarkably'],
+  'get':['obtain','achieve'],'make':['create','develop'],
+  'think':['believe','consider'],'said':['mentioned','explained'],
+  'went':['travelled','proceeded'],'like':['appreciate','enjoy'],
+  'know':['understand','recognise'],'want':['desire','aspire'],
+  'show':['demonstrate','illustrate'],'e[	Œñ…ÿ\‹⁄\›	À	‹›\‹ù	◊Kà	›\ŸIŒñ…›][\ŸIÀ	ÿ\I◊K	Ÿ⁄]ôIŒñ…‹õ›öYIÀ	ÿ€€ùöXù]I◊Kà	›ZŸIŒñ…›[ô\ùZŸIÀ	‹\ú›YI◊K	Ÿö[ô	Œñ…Ÿ\ÿ€›ô\âÀ	⁄Y[ùYûI◊Kà	ÿ\⁄…Œñ…Ÿ[ú]Z\ôIÀ	‹ô\]Y\›	◊K	›[	Œñ…⁄[ôõ‹õIÀ	Ÿ^Z[â◊Kà	›€‹ö…Œñ…ÿ€€ùöXù]IÀ	ÿ€€Xõ‹ò]I◊K	€X\õâŒñ…ÿX‹]Z\ôIÀ	€X\›\â◊Kà	⁄\ô	Œñ…ÿ⁄[[ô⁄[ô…À	Ÿ[X[ô[ô…◊K	ŸX\ﬁIŒñ…‹›òZY⁄õ‹ùÿ\ô	À	€X[òYŸXXõI◊Kà	€ô]…Œñ…⁄[õõ›ò]]ôIÀ	ÿ€€ù[\‹ò\ûI◊K	€€	Œñ…Ÿ\›Xõ\⁄Y	À	Ÿ^\öY[òŸY	◊Kà	›ûIŒñ…ÿ][\	À	Ÿ[ôX]õ›\â◊K	‹›\ù	Œñ…⁄[ö]X]IÀ	ÿ€€[Y[òŸI◊Kà	⁄[\‹ù[ù	Œñ…Ÿ\‹Ÿ[ùX[	À	ÿ‹ùX⁄X[	◊K	⁄[ù\ô\›[ô…Œñ…Ÿò\ÿ⁄[ò][ô…À	ÿ€€\[[ô…◊Kà	‹õÿõ[IŒñ…ÿ⁄[[ôŸIÀ	€ÿú›X€I◊Kù[ô…Œñ…ÿ\‹X›	À	Ÿ[[Y[ù	◊Kà	€›	Œñ…ÿ€€ú⁄Y\òXõIÀ	‹›Xú›[ùX[	◊K	ÿô]\âŒñ…⁄[\õ›ôY	À	‹›\\ö[‹â◊Kà	ŸYôöX›[	Œñ…ÿ⁄[[ô⁄[ô…À	Ÿ[X[ô[ô…◊K	‹⁄[\IŒñ…‹›òZY⁄õ‹ùÿ\ô	À	ÿ€X\â◊Kà	Ÿò\›	Œñ…ŸYôöX⁄Y[ù	À	‹ò\Y	◊K	‹€›…Œñ…Ÿ‹òYX[	À	€YX\›\ôY	◊Kà	›[…Œñ…Ÿ\ÿ›\‹…À	ÿ€€[][öXÿ]I◊K	‹ŸYIŒñ…€ÿúŸ\ùôIÀ	‹ôX€Ÿ€ö\ŸI◊Kà	ÿ€€YIŒñ…ÿ\úö]ôIÀ	⁄õ⁄[â◊K	Ÿ€…Œñ…‹õÿŸYY	À	›ô[ù\ôI◊Kà	ŸôY[	Œñ…Ÿ^\öY[òŸIÀ	‹Ÿ[úŸI◊K	‹ô[Y[Xô\âŒñ…‹ôXÿ[	À	‹ôX€Ÿ€ö\ŸI◊Kà	ÿ⁄[ôŸIŒñ…⁄[\õ›ôIÀ	›ò[úŸõ‹õI◊K	⁄ŸY\	Œñ…€XZ[ùZ[âÀ	‹›\›Z[â◊BüN¬ÇãÀ»LçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçMLLçML0\u2550\u2550\u2550\u2550
+// DATAMUSE \u2014 BETTER VOCABULARY
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+async function getBetterWord(text){
+  try{
+    const words = text.trim().split(/\s+/);
+    const skip = ['the','a','an','is','am','are','was','were','i','my','me','it','in','on','at','to','of','and','but','for','so','do','did','not','this','that','with','you','your','we','our','they','their','has','have','had','will','would','can','could','should','may','might','be','been','being'];
+    // Phase 5: hardcoded map ‚Äî zero-cost, instant
+    for(const w of words){
+      const wl = w.toLowerCase().replace(/[^a-z]/g,'');
+      if(wl.length > 2 && !skip.includes(wl) && WEAK_WORDS[wl]){
+        const alts = WEAK_WORDS[wl];
+        return `Instead of ‚Äú<strong>${esc(w)}</strong>‚Äù, try: <strong>${alts.join('</strong> or <strong>')}</strong>.`;
+      }
+    }
+    // Datamuse fallback for words not in hardcoded map
+    const target = words.find(w => w.length > 4 && !skip.includes(w.toLowerCase()));
+    if(!target) return '';
+    const resp = await fetch(`https://api.datamuse.com/words?ml=${encodeURIComponent(target)}&max=3`);
+    if(!resp.ok) return '';
+    const data = await resp.json();
+    const better = data.filter(d => d.word.toLowerCase() !== target.toLowerCase());
+    if(better.length){
+      return `Instead of ‚Äú<strong>${esc(target)}</strong>‚Äù, you could also say: <strong>${better.slice(0,2).map(d=>d.word).join('</strong>, <strong>')}</strong>.`;
+    }
+  }catch(e){}
+  return '';
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// PROFESSION DETECTION
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function detectProfession(text){
+  const t = text.toLowerCase();
+  if(/teacher|principal|professor|lecturer|educator|school|college|teach|faculty/.test(t)) S.profession='teacher';
+  else if(/student|studying|studying|university|class|exam|school/.test(t)) S.profession='student';
+  else if(/engineer|developer|software|it |programmer|tech|coding/.test(t)) S.profession='engineer';
+  else if(/doctor|nurse|medical|hospital|physician|health/.test(t)) S.profession='doctor';
+}
+
+function detectKeywords(text){
+  const t = text.toLowerCase();
+  const checks = ['music','sing','guitar','cricket','yoga','gym','reading','cooking','travel','painting','garden'];
+  checks.forEach(kw => { if(t.includes(kw) && !S.detectedKeywords.includes(kw)) S.detectedKeywords.push(kw); });
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// DISPLAY
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function showAnswerBubble(text){
+  const main = document.getElementById('smain');
+  const el = document.createElement('div');
+  el.className = 'abubble';
+  el.textContent = text;
+  main.appendChild(el);
+  main.scrollTop = main.scrollHeight;
+}
+
+function showCorrectionCard(raw, corrected, ltMatches, indianIssues, vocabHint, geminiErrors){
+  geminiErrors = geminiErrors || [];
+  const main = document.getElementById('smain');
+  const hasErrors = ltMatches.length > 0 || indianIssues.length > 0 || geminiErrors.length > 0;
+
+  if(!hasErrors){
+    const el = document.createElement('div');
+    el.className = 'noerr';
+    el.innerHTML = `<div class="noerr-ico">\u2705</div>
+      <div class="noerr-txt">No grammar errors found!</div>
+      <div class="noerr-sub">Well done, ${esc(S.name)}. Keep speaking naturally.</div>`;
+    main.appendChild(el);
+    // speak a positive acknowledgment
+    speak(`Well done ${S.name}! No errors found. `);
+  } else {
+    const ccard = document.createElement('div');
+    ccard.className = 'ccard';
+    let html = `<div class="ccard-title">Correction</div>`;
+
+    // Show first major correction prominently
+    const firstLT = ltMatches[0];
+    const firstIN = indianIssues[0];
+
+    if(firstIN){
+      const wrongPart = firstIN.found;
+      html += `<div class="cerr-row"><span class="cerr-x">\u2717</span><span class="cerr-txt">${esc(raw)}</span></div>`;
+      if(firstIN.fix){
+        const fixed = raw.replace(new RegExp(escRe(wrongPart),'gi'), firstIN.fix);
+        html += `<div class="cok-row"><span class="cok-x">\u2713</span><span class="cok-txt">${esc(fixed)}</span></div>`;
+      }
+      html += `<div class="crule"><strong>Indian English:</strong> ${esc(firstIN.msg)}</div>`;
+    } else if(firstLT){
+      const wrong = raw.slice(firstLT.offset, firstLT.offset + firstLT.length);
+      const fix = firstLT.replacements[0].value;
+      const catName = firstLT.rule && firstLT.rule.category ? firstLT.rule.category.name : 'Grammar';
+      html += `<div class="cerr-row"><span class="cerr-x">\u2717</span><span class="cerr-txt">${esc(raw)}</span></div>`;
+      html += `<div class="cok-row"><span class="cok-x">\u2713</span><span class="cok-txt">${esc(corrected)}</span></div>`;
+      html += `<div class="crule"><strong>${esc(catName)}:</strong> ${esc(firstLT.message || firstLT.shortMessage || '')}</div>`;
+    } else if(geminiErrors.length > 0){
+      const ge = geminiErrors[0];
+      const fixedSentence = ge.wrong ? raw.replace(new RegExp(escRe(ge.wrong),'gi'), ge.right||ge.wrong) : raw;
+      html += `<div class="cerr-row"><span class="cerr-x">\u2717</span><span class="cerr-txt">${esc(raw)}</span></div>`;
+      html += `<div class="cok-row"><span class="cok-x">\u2713</span><span class="cok-txt">${esc(fixedSentence)}</span></div>`;
+      html += `<div class="crule"><strong>\u2728 AI Suggestion:</strong> ${esc(ge.msg||'')}</div>`;
+    }
+
+    // Show additional errors count
+    const moreCount = ltMatches.length + indianIssues.length - 1;
+    if(moreCount > 0){
+      html += `<div class="crule" style="border-color:var(--warn);color:var(--warn)">
+        <strong>+${moreCount} more issue${moreCount>1?'s':''}</strong> in this sentence.</div>`;
+    }
+
+    // Vocab hint
+    if(vocabHint){
+      html += `<div class="cvocab"><strong>\uD83D\uDCA1 Vocabulary:</strong> ${vocabHint}</div>`;
+    }
+
+    // Speak button
+    if(corrected && corrected !== raw){
+      html += `<button class="cspeak-btn" onclick="speak('Correct sentence: ${corrected.replace(/'/g,"\\'")}')">\uD83D\uDD0A Hear correct sentence</button>`;
+    }
+
+    ccard.innerHTML = html;
+    // Phase 4: paraphrase via Gemini Nano ‚Äî async, appended when ready
+    if(window.ai && window.ai.languageModel){
+      const phraseDiv = document.createElement('div');
+      phraseDiv.className = 'cphrase';
+      phraseDiv.style.display = 'none';
+      ccard.appendChild(phraseDiv);
+      getParaphrase(raw).then(alt => {
+        if(alt){
+          phraseDiv.innerHTML = `<strong>üí° Try saying:</strong> ${esc(alt)}`;
+          phraseDiv.style.display = '';
+        }
+      });
+    }
+    main.appendChild(ccard);
+
+    // Auto-speak corrected version
+    if(corrected && corrected !== raw){
+      setTimeout(()=> speak('The correct sentence is: ' + corrected), 400);
+    }
+  }
+
+  // Show Next button
+  showNextBtn();
+  main.scrollTop = main.scrollHeight;
+}
+
+function showNextBtn(){
+  const row = document.getElementById('vrow');
+  row.innerHTML = `
+    <button class="nxtbtn" onclick="nextQuestion()">Next Question \u2192</button>
+    <button class="kbbtn" onclick="endSession()" title="End session">\u23F9</button>`;
+}
+
+function nextQuestion(){
+  S.qIdx++;
+  if(S.qIdx >= S.questions.length){ endSession(); return; }
+  renderQuestion();
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// TTS
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function speak(txt){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 0.87; u.pitch = 1.0; u.lang = 'en-IN';
+  window.speechSynthesis.speak(u);
+}
+
+// Speak a question AND keep mic button disabled until TTS ends.
+// This is critical on Android: audio hardware must release speaker
+// before mic input is possible. User cannot tap mic too early.
+function speakQuestion(txt){
+  const isMob = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  const enableBtn = () => {
+    const b = document.getElementById('micbtn');
+    if(b && !S.listening){ b.disabled = false; b.style.opacity = ''; }
+    setStat('idle', 'Tap \uD83C\uDFA4 mic to answer');
+  };
+
+  if(isMob){
+    // On mobile: mic stays enabled \u2014 let user tap whenever they are ready.
+    // TTS plays in background; startRec() will cancel it if user taps before it ends.
+    setStat('idle', 'Tap \uD83C\uDFA4 mic to answer');
+    if(window.speechSynthesis){
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(txt);
+      u.rate = 0.87; u.pitch = 1.0; u.lang = 'en-IN';
+      u.onerror = function(){};
+      window.speechSynthesis.speak(u);
+    }
+    return; // mic button left enabled
+  }
+
+  // Desktop: briefly disable mic while TTS plays (reliable onend on desktop)
+  const btn = document.getElementById('micbtn');
+  if(btn){ btn.disabled = true; btn.style.opacity = '0.4'; }
+  setStat('idle', '\uD83D\uDD0A Question speaking\u2026');
+
+  if(,window.speechSynthesis){ enableBtn(); return; }
+  window.speechSynthesis.cancel();
+
+  const u = new SpeechSynthesisUtterance(txt);
+  u.rate = 0.87; u.pitch = 1.0; u.lang = 'en-IN';
+
+  // Fallback: enable mic after 8 seconds max
+  const fallback = setTimeout(enableBtn, 8000);
+  u.onend   = () => { clearTimeout(fallback); utTimeout(enableBtn, 200); };
+  u.onerror = () => { clearTimeout(fallback); enableBtn(); };
+
+  window.speechSynthesis.speak(u);
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// UI STATE HELPERS
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function setStat(mode, label){
+  document.getElementById('statlbl').textContent = label;
+  document.querySelectorAll('.bar').forEach(b => b.classList.toggle('on', mode==='listen'));
+}
+
+function setVoiceMode(){
+  const vrow = document.getElementById('vrow');
+  vrow.innerHTML = `
+    <button class="micbtn" id="micbtn" onclick="toggleMic()">
+      <span id="micico">\uD83C\uDFA4</span><span id="miclbl">Speak Answer</span>
+    </button>
+    <button class="kbbtn" onclick="toText()" title="Type instead"><span class="kbico">\u2328</span><span>Type</span></button>`;
+  document.getElementById('trow').style.display = 'none';
+  document.getElementById('vrow').style.display = 'flex';
+}
+
+function setListenMode(){
+  const vrow = document.getElementById('vrow');
+  vrow.innerHTML = `
+    <button class="micbtn lstn" id="micbtn" onclick="toggleMic()">
+      <span>\u23F9</span><span>Stop</span>
+    </button>`;
+}
+
+function setDisabledMode(){
+  const vrow = document.getElementById('vrow');
+  vrow.innerHTML = `<button class="micbtn" disabled style="opacity:.4">
+    <span>\u231B</span><span>Checking...</span></button>`;
+}
+
+function toText(){
+  document.getElementById('vrow').style.display = 'none';
+  const mhint = document.getElementById('mhint');
+  if(mhint) mhint.style.display = 'none';
+  document.getElementById('trow').style.display = 'flex';
+  setTimeout(()=>document.getElementById('tinput').focus(), 100);
+}
+
+function toVoice(){
+  document.getElementById('trow').style.display = 'none';
+  document.getElementById('vrow').style.display = 'flex';
+}
+
+function updateGrammarScore(){
+  const scores = S.grammarScores;
+  if(!scores.length){ document.getElementById('sc-g').textContent='\u2014'; return; }
+  const avg = scores.reduce((a,b)=>a+b,0)/scores.length;
+  const el = document.getElementById('sc-g');
+  el.textContent = avg.toFixed(1);
+  el.style.color = avg>=7?'var(--ok)':avg>=5?'var(--warn)':'var(--err)';
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// SESSION REPORT
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function endSession(){
+  if(!S.utterances.length){ newSession(); return; }
+  saveStreak();
+
+  const avg = S.grammarScores.length
+    ? S.grammarScores.reduce((a,b)=>a+b,0)/S.grammarScores.length : 0;
+
+  document.getElementById('r-score').textContent = avg.toFixed(1);
+  document.getElementById('r-score').style.color = avg>=7?'var(--ok)':avg>=5?'var(--warn)':'var(--err)';
+  document.getElementById('r-turns').textContent = S.utterances.length;
+  document.getElementById('r-words').textContent = S.totalWords;
+  document.getElementById('r-errors').textContent = S.totalErrors;
+  document.getElementById('r-streak').textContent = S.streak;
+  document.getElementById('rname').textContent = `Great session, ${S.name}!`;
+
+  // Phase 2: score trend vs previous session
+  const prevScore = loadLastScore();
+  const trendEl = document.getElementById('r-trend');
+  if(prevScore !== null && trendEl){
+    const diff = avg - prevScore;
+    const absdiff = Math.abs(diff).toFixed(1);
+    if(diff > 0.2){
+      trendEl.innerHTML = `<span style="font-size:18px">‚ñ≤</span><span class="rttrend-up">¬†Improved by ${absdiff} pts from last session (${prevScore.toFixed(1)}/10)</span>`;
+    } else if(diff < -0.2){
+      trendEl.innerHTML = `<span style="font-size:18px">‚ñº</span><span class="rttrend-dn">¬†Score was ${absdiff} lower than last session (${prevScore.toFixed(1)}/10)</span>`;
+    } else {
+      trendEl.innerHTML = `<span style="font-size:18px">‚Üí</span><span class="rttrend-eq">¬†Similar to last session (${prevScore.toFixed(1)}/10)</span>`;
+    }
+    trendEl.style.display = 'flex';
+  } else if(trendEl){
+    trendEl.style.display = 'none';
+  }
+  saveScoreHistory(avg);
+
+  // Error breakdown
+  const bd = document.getElementById('r-breakdown');
+  const types = Object.entries(S.errorTypes).sort((a,b)=>b[1]-a[1]);
+  if(types.length){
+    bd.innerHTML = types.map(([k,v])=>
+      `<div class="rberr"><span class="rberr-name">${esc(k)}</span><span class="rberr-count">${v}</span></div>`
+    ).join('');
+  } else {
+    bd.innerHTML = `<div style="color:var(--ok);font-size:14px;padding:8px 0">No errors recorded \u2014 excellent!</div>`;
+  }
+
+  // Motivational message
+  const msgs = [
+    `Iour average grammar score is ${avg.toFixed(1)}/10. ${avg>=7?'Excellent work!':'Keep practicing daily!'}`,
+    `You spoke ${S.totalWords} words in ${S.utterances.length} turns. Every practice session builds fluency.`,
+    `${S.totalErrors===0?'Zero grammar errors \u2014 outstanding!':'Focus on correcting the error types shown above.'}`,
+    `Consistency is the key to fluency. Practice again tomorrow to maintain your ${S.streak}-day streak!`
+  ];
+  document.getElementById('r-msg').textContent = msgs[Math.floor(Math.random()*msgs.length)];
+
+  // Switch to report screen
+  document.getElementById('ss').classList.remove('on');
+  document.getElementById('sr').classList.add('on');
+}
+
+function practiceAgain(){
+  document.getElementById('sr').classList.remove('on');
+  S.questions = buildQuestions();
+  S.qIdx = 0; S.utterances = []; S.totalWords = 0;
+  S.totalErrors = 0; S.errorTypes = {}; S.grammarScores = [];
+  S.detectedKeywords = []; S.profession = 'general';
+  document.getElementById('ss').classList.add('on');
+  renderQuestion();
+}
+
+function newSession(){
+  document.getElementById('sr').classList.remove('on');
+  document.getElementById('ss').classList.remove('on');
+  document.getElementById('sw').style.display = 'flex';
+  document.getElementById('smain').innerHTML = '';
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// STREAK (localStorage)
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function saveStreak(){
+  try{
+    const today = new Date().toDateString();
+    const last = localStorage.getItem('vk_lastdate');
+    let streak = parseInt(localStorage.getItem('vk_streak')||'0');
+    if(last === today){ /* same day */ }
+    else if(last && new Date(today)-new Date(last) <= 86400000){ streak++; }
+    else{ streak = 1; }
+    localStorage.setItem('vk_streak', streak);
+    localStorage.setItem('vk_lastdate', today);
+    S.streak = streak;
+  }catch(e){ S.streak = 1; }
+}
+
+function loadStreak(){
+  try{
+    const today = new Date().toDateString();
+    const last = localStorage.getItem('vk_lastdate');
+    let streak = parseInt(localStorage.getItem('vk_streak')||'0');
+    if(!last || new Date(today)-new Date(last) > 86400000) streak = 0;
+    S.streak = streak;
+  }catch(e){ S.streak = 0; }
+}
+
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// PHASE 2: SESSION SCORE HISTORY (localStorage)
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+function saveScoreHistory(score){
+  try{
+    const hist = JSON.parse(localStorage.getItem('vk_scores')||'[]');
+    hist.push({ s: Math.round(score*10)/10, d: new Date().toDateString() });
+    if(hist.length > 10) hist.shift(); // keep last 10 sessions
+    localStorage.setItem('vk_scores', JSON.stringify(hist));
+  }catch(e){}
+}
+function loadLastScore(){
+  try{
+    const hist = JSON.parse(localStorage.getItem('vk_scores')||'[]');
+    if(hist.length < 2) return null;
+    return hist[hist.length-2].s; // second-to-last = previous session
+  }catch(e){ return null; }
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// TOAST
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+let toastTimer;
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> el.classList.remove('on'), 4000);
+}
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550550\u2550
+// UTILS
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function esc(s){ const d=document.createElement('div');d.textContent=s||'';return d.innerHTML; }
+function escRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+
+// Init check + Phase 3: AI badge detection
+window.onload = async function(){
+  const isMob = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const hasSR = !!(window.SpeechRecognition||window.webkitSpeechRecognition);
+  const freeEl = document.getElementById('wfree');
+
+  if(!hasSR){
+    if(freeEl) freeEl.innerHTML = '\u2713 Grammar \u00B7 \u2713 Vocabulary \u00B7 \u2713 Voice (type-mode on this browser)';
+  } else if(isMob && freeEl){
+    freeEl.innerHTML = '\u2713 Grammar \u00B7 \u2713 Vocabulary \u00B7 \u2713 Voice <span style="color:var(--ok)">\u00B7 Tap mic to speak</span>';
+  }
+
+  if(!isMob) document.getElementById('wname').focus();
+
+  // Phase 3: browser AI detection badge
+  const badge = document.getElementById('wai-badge');
+  if(badge){
+    let aiOk = false;
+    if(window.ai && window.ai.languageModel){
+      try{
+        const avail = await window.ai.languageModel.availability();
+        if(avail !== 'no') aiOk = true;
+      }catch(e){}
+    }
+    if(aiOk){
+      badge.textContent = '\u2728 AI Enhanced';
+      badge.style.display = 'inline-flex';
+    } else {
+      badge.textContent = 'Standard Mode';
+      badge.style.display = 'inline-flex';
+      badge.style.background = 'rgba(120,120,120,.1)';
+      badge.style.borderColor = 'rgba(120,120,120,.25)';
+      badge.style.color = 'var(--muted)';
+    }
+  }
+};
+</script>
+</body>
+</html>
