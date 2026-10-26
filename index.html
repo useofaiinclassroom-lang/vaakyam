@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>VAAKYAM &#8212; Free English Coach</title>
+<title>VAAKYAM â€” Free English Coach</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -217,7 +215,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);
 <div id="sw">
   <div class="wlogo"><span>VAA</span>KYAM</div>
   <div class="wsub">AI English Fluency Coach</div>
-  <div class="wtag">100% FREE &#183; No API Key &#183; No Login</div>
+  <div class="wtag">100% FREE Â· No API Key Â· No Login</div>
   <div id="wai-badge" class="wai-badge"></div>
   <div class="wcard">
     <div class="wlbl">Your Name</div>
@@ -228,8 +226,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);
       <button class="gbtn" id="g2" onclick="selGoal('interview',this)">Interview Prep</button>
       <button class="gbtn" id="g3" onclick="selGoal('fluency',this)">Fluency Building</button>
     </div>
-    <button class="wstart" id="wstart" onclick="startSession()">Start Practice &#8594;</button>
-    <div class="wfree"><span>&#10003; Grammar</span> &#183; <span>&#10003; Vocabulary</span> &#183; <span>&#10003; Voice</span> &#183; Zero cost</div>
+    <button class="wstart" id="wstart" onclick="startSession()">Start Practice â†’</button>
+    <div class="wfree"><span>âœ“ Grammar</span> Â· <span>âœ“ Vocabulary</span> Â· <span>âœ“ Voice</span> Â· Zero cost</div>
   </div>
 </div>
 
@@ -237,11 +235,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);
 <div id="ss">
   <div class="shdr">
     <div>
-      <div class="sname">Hello, <span id="shdr-name">&#8212;</span></div>
+      <div class="sname">Hello, <span id="shdr-name">â€”</span></div>
       <div class="sprog" id="sprog">Question 1 of 12</div>
     </div>
     <div class="sscore-wrap">
-      <div class="sscore"><div class="sscore-val" id="sc-g">&#8212;</div><div class="sscore-lbl">Grammar</div></div>
+      <div class="sscore"><div class="sscore-val" id="sc-g">â€”</div><div class="sscore-lbl">Grammar</div></div>
       <div class="sscore"><div class="sscore-val" id="sc-q">0</div><div class="sscore-lbl">Turns</div></div>
     </div>
   </div>
@@ -256,17 +254,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);
     </div>
     <div class="btnrow" id="vrow">
       <button class="micbtn" id="micbtn" onclick="toggleMic()">
-        <span id="micico">&#127908;</span><span id="miclbl">Speak Answer</span>
+        <span id="micico">ðŸŽ¤</span><span id="miclbl">Speak Answer</span>
       </button>
-      <button class="kbbtn" onclick="toText()" title="Type instead"><span class="kbico">&#9000;</span><span>Type</span></button>
+      <button class="kbbtn" onclick="toText()" title="Type instead"><span class="kbico">âŒ¨</span><span>Type</span></button>
     </div>
     <div id="mhint" style="display:none;text-align:center;font-size:11px;color:var(--muted);margin-top:6px">
-      Can&apos;t use mic? &nbsp;<span onclick="toText()" style="color:var(--accent);cursor:pointer;text-decoration:underline">Type your answer instead</span>
+      Can't use mic? &nbsp;<span onclick="toText()" style="color:var(--accent);cursor:pointer;text-decoration:underline">Type your answer instead</span>
     </div>
     <div class="trow" id="trow" style="display:none">
       <input class="tinput" id="tinput" placeholder="Type your answer here..." onkeydown="if(event.key==='Enter')submitText()">
-      <button class="sendbtn" onclick="submitText()">&#9654;</button>
-      <button class="kbbtn" onclick="toVoice()">&#127908;</button>
+      <button class="sendbtn" onclick="submitText()">â–¶</button>
+      <button class="kbbtn" onclick="toVoice()">ðŸŽ¤</button>
     </div>
   </div>
 </div>
@@ -276,7 +274,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);
   <div class="rlogo"><span>VAA</span>KYAM</div>
   <div class="rname" id="rname">Great session!</div>
   <div class="rscore-circle">
-    <div class="rscore-num" id="r-score">&#8212;</div>
+    <div class="rscore-num" id="r-score">â€”</div>
     <div class="rscore-lbl">/ 10</div>
   </div>
   <div id="r-trend" class="rttrend" style="display:none"></div>
@@ -288,7 +286,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);
   </div>
   <div class="rbreakdown">
     <div class="rbtitle">Error Breakdown</div>
-    <div id="r-breakdown">&#8212;</div>
+    <div id="r-breakdown">â€”</div>
   </div>
   <div class="rmsg" id="r-msg"></div>
   <div class="rbtns">
@@ -951,7 +949,7 @@ const WEAK_WORDS = {
   'think':['believe','consider'],'said':['mentioned','explained'],
   'went':['travelled','proceeded'],'like':['appreciate','enjoy'],
   'know':['understand','recognise'],'want':['desire','aspire'],
-  'show':['demonstrate','illustrate'],'e[	Î–ÉØ\ÜÚ\Ý	Ë	ÜÝ\Ü	×Kˆ	Ý\ÙIÎ–ÉÝ][\ÙIË	Ø\I×K	ÙÚ]™IÎ–ÉÜ›ÝšYIË	ØÛÛšX]I×Kˆ	ÝZÙIÎ–ÉÝ[™\ZÙIË	Ü\œÝYI×K	Ùš[™	Î–ÉÙ\ØÛÝ™\‰Ë	ÚY[YžI×Kˆ	Ø\ÚÉÎ–ÉÙ[œ]Z\™IË	Ü™\]Y\Ý	×K	Ý[	Î–ÉÚ[™›Ü›IË	Ù^Z[‰×Kˆ	ÝÛÜšÉÎ–ÉØÛÛšX]IË	ØÛÛX›Ü˜]I×K	ÛX\›‰Î–ÉØXÜ]Z\™IË	ÛX\Ý\‰×Kˆ	Ú\™	Î–ÉØÚ[[™Ú[™ÉË	Ù[X[™[™É×K	ÙX\ÞIÎ–ÉÜÝ˜ZYÚ›ÜØ\™	Ë	ÛX[˜YÙXX›I×Kˆ	Û™]ÉÎ–ÉÚ[››Ý˜]]™IË	ØÛÛ[\Ü˜\žI×K	ÛÛ	Î–ÉÙ\ÝX›\ÚY	Ë	Ù^\šY[˜ÙY	×Kˆ	ÝžIÎ–ÉØ][\	Ë	Ù[™X]›Ý\‰×K	ÜÝ\	Î–ÉÚ[š]X]IË	ØÛÛ[Y[˜ÙI×Kˆ	Ú[\Ü[	Î–ÉÙ\ÜÙ[X[	Ë	ØÜXÚX[	×K	Ú[\™\Ý[™ÉÎ–ÉÙ˜\ØÚ[˜][™ÉË	ØÛÛ\[[™É×Kˆ	Ü›Ø›[IÎ–ÉØÚ[[™ÙIË	ÛØœÝXÛI×K[™ÉÎ–ÉØ\ÜXÝ	Ë	Ù[[Y[	×Kˆ	ÛÝ	Î–ÉØÛÛœÚY\˜X›IË	ÜÝXœÝ[X[	×K	Ø™]\‰Î–ÉÚ[\›Ý™Y	Ë	ÜÝ\\š[Ü‰×Kˆ	ÙY™šXÝ[	Î–ÉØÚ[[™Ú[™ÉË	Ù[X[™[™É×K	ÜÚ[\IÎ–ÉÜÝ˜ZYÚ›ÜØ\™	Ë	ØÛX\‰×Kˆ	Ù˜\Ý	Î–ÉÙY™šXÚY[	Ë	Ü˜\Y	×K	ÜÛÝÉÎ–ÉÙÜ˜YX[	Ë	ÛYX\Ý\™Y	×Kˆ	Ý[ÉÎ–ÉÙ\ØÝ\ÜÉË	ØÛÛ[][šXØ]I×K	ÜÙYIÎ–ÉÛØœÙ\™IË	Ü™XÛÙÛš\ÙI×Kˆ	ØÛÛYIÎ–ÉØ\œš]™IË	Ú›Ú[‰×K	ÙÛÉÎ–ÉÜ›ØÙYY	Ë	Ý™[\™I×Kˆ	Ù™Y[	Î–ÉÙ^\šY[˜ÙIË	ÜÙ[œÙI×K	Ü™[Y[X™\‰Î–ÉÜ™XØ[	Ë	Ü™XÛÙÛš\ÙI×Kˆ	ØÚ[™ÙIÎ–ÉÚ[\›Ý™IË	Ý˜[œÙ›Ü›I×K	ÚÙY\	Î–ÉÛXZ[Z[‰Ë	ÜÝ\ÝZ[‰×BŸNÂ‚‹ËÈLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLMLLML0\u2550\u2550\u2550\u2550
+  'show':['demonstrate','illustrate'],'e[	Î–ï¿½ï¿½\ï¿½ï¿½\ï¿½	ï¿½	ï¿½ï¿½\Ü	ï¿½Kï¿½	ï¿½\ï¿½IÎ–ï¿½ï¿½][\ï¿½Iï¿½	ï¿½\Iï¿½K	ï¿½ï¿½]ï¿½IÎ–ï¿½ï¿½ï¿½ÝšYIï¿½	ï¿½ï¿½Ûï¿½Xï¿½]Iï¿½Kï¿½	ï¿½Zï¿½IÎ–ï¿½ï¿½[ï¿½\ï¿½Zï¿½Iï¿½	ï¿½\ï¿½ï¿½YIï¿½K	Ùš[ï¿½	Î–ï¿½ï¿½\ï¿½ï¿½Ý™\ï¿½ï¿½	ï¿½Y[ï¿½Yï¿½Iï¿½Kï¿½	ï¿½\ï¿½ï¿½Î–ï¿½ï¿½[ï¿½]Z\ï¿½Iï¿½	Ü™\]Y\ï¿½	ï¿½K	ï¿½[	Î–ï¿½ï¿½[ï¿½ï¿½Ü›Iï¿½	ï¿½^Z[ï¿½ï¿½Kï¿½	ï¿½ï¿½Üšï¿½Î–ï¿½ï¿½ï¿½Ûï¿½Xï¿½]Iï¿½	ï¿½ï¿½ï¿½Xï¿½Ü˜]Iï¿½K	ï¿½X\ï¿½ï¿½Î–ï¿½ï¿½Xï¿½]Z\ï¿½Iï¿½	ï¿½X\ï¿½\ï¿½ï¿½Kï¿½	ï¿½\ï¿½	Î–ï¿½ï¿½ï¿½[[ï¿½ï¿½[ï¿½ï¿½ï¿½	ï¿½[X[ï¿½[ï¿½ï¿½ï¿½K	ï¿½X\ï¿½IÎ–ï¿½ï¿½ï¿½ï¿½ZYï¿½ï¿½Üï¿½\ï¿½	ï¿½	ï¿½X[ï¿½Yï¿½XXï¿½Iï¿½Kï¿½	Û™]ï¿½Î–ï¿½ï¿½[ï¿½ï¿½Ý˜]]ï¿½Iï¿½	ï¿½ï¿½Û[\Ü˜\ï¿½Iï¿½K	ï¿½ï¿½	Î–ï¿½ï¿½\ï¿½Xï¿½\ï¿½Y	ï¿½	ï¿½^\ï¿½Y[ï¿½ï¿½Y	ï¿½Kï¿½	ï¿½ï¿½IÎ–ï¿½ï¿½][\	ï¿½	ï¿½[ï¿½X]ï¿½ï¿½\ï¿½ï¿½K	ï¿½ï¿½\ï¿½	Î–ï¿½ï¿½[ï¿½]X]Iï¿½	ï¿½ï¿½ï¿½[Y[ï¿½ï¿½Iï¿½Kï¿½	ï¿½[\Ü[ï¿½	Î–ï¿½ï¿½\ï¿½ï¿½[ï¿½X[	ï¿½	ï¿½ÜXï¿½X[	ï¿½K	ï¿½[ï¿½\ï¿½\ï¿½[ï¿½ï¿½Î–ï¿½Ù˜\ï¿½ï¿½[ï¿½][ï¿½ï¿½ï¿½	ï¿½ï¿½ï¿½\[[ï¿½ï¿½ï¿½Kï¿½	ï¿½ï¿½Ø›[IÎ–ï¿½ï¿½ï¿½[[ï¿½ï¿½Iï¿½	ï¿½Øœï¿½Xï¿½Iï¿½Kï¿½[ï¿½ï¿½Î–ï¿½ï¿½\ï¿½Xï¿½	ï¿½	ï¿½[[Y[ï¿½	ï¿½Kï¿½	ï¿½ï¿½	Î–ï¿½ï¿½ï¿½Ûœï¿½Y\ï¿½Xï¿½Iï¿½	ï¿½ï¿½Xï¿½ï¿½[ï¿½X[	ï¿½K	Ø™]\ï¿½Î–ï¿½ï¿½[\ï¿½Ý™Y	ï¿½	ï¿½ï¿½\\ï¿½[Ü‰ï¿½Kï¿½	ï¿½Yï¿½ï¿½Xï¿½[	Î–ï¿½ï¿½ï¿½[[ï¿½ï¿½[ï¿½ï¿½ï¿½	ï¿½[X[ï¿½[ï¿½ï¿½ï¿½K	ï¿½ï¿½[\IÎ–ï¿½ï¿½ï¿½ï¿½ZYï¿½ï¿½Üï¿½\ï¿½	ï¿½	ï¿½ï¿½X\ï¿½ï¿½Kï¿½	Ù˜\ï¿½	Î–ï¿½ï¿½Yï¿½ï¿½Xï¿½Y[ï¿½	ï¿½	Ü˜\Y	ï¿½K	ï¿½ï¿½ï¿½ï¿½Î–ï¿½ï¿½Ü˜YX[	ï¿½	ï¿½YX\ï¿½\ï¿½Y	ï¿½Kï¿½	ï¿½[ï¿½Î–ï¿½ï¿½\ï¿½ï¿½\ï¿½ï¿½ï¿½	ï¿½ï¿½ï¿½[][ï¿½Xï¿½]Iï¿½K	ï¿½ï¿½YIÎ–ï¿½ï¿½Øœï¿½\ï¿½ï¿½Iï¿½	Ü™Xï¿½ï¿½Ûš\ï¿½Iï¿½Kï¿½	ï¿½ï¿½ï¿½YIÎ–ï¿½ï¿½\ï¿½ï¿½]ï¿½Iï¿½	Ú›ï¿½[ï¿½ï¿½K	ï¿½ï¿½ï¿½Î–ï¿½ï¿½ï¿½ï¿½ï¿½YY	ï¿½	Ý™[ï¿½\ï¿½Iï¿½Kï¿½	Ù™Y[	Î–ï¿½ï¿½^\ï¿½Y[ï¿½ï¿½Iï¿½	ï¿½ï¿½[ï¿½ï¿½Iï¿½K	Ü™[Y[Xï¿½\ï¿½Î–ï¿½Ü™Xï¿½[	ï¿½	Ü™Xï¿½ï¿½Ûš\ï¿½Iï¿½Kï¿½	ï¿½ï¿½[ï¿½ï¿½IÎ–ï¿½ï¿½[\ï¿½Ý™Iï¿½	ï¿½ï¿½[ï¿½Ù›Ü›Iï¿½K	ï¿½ï¿½Y\	Î–ï¿½ï¿½XZ[ï¿½Z[ï¿½ï¿½	ï¿½ï¿½\ï¿½Z[ï¿½ï¿½Bï¿½NÂ‚ï¿½ï¿½ï¿½Lï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½MLLï¿½ML0\u2550\u2550\u2550\u2550
 // DATAMUSE \u2014 BETTER VOCABULARY
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 async function getBetterWord(text){
@@ -1079,7 +1077,7 @@ function showCorrectionCard(raw, corrected, ltMatches, indianIssues, vocabHint, 
       phraseDiv.className = 'cphrase';
       phraseDiv.style.display = 'none';
       ccard.appendChild(phraseDiv);
-      getParaphrase(raw).then(alt => {
+    ï¿½ getParaphrase(raw).then(alt => {
         if(alt){
           phraseDiv.innerHTML = `<strong>ðŸ’¡ Try saying:</strong> ${esc(alt)}`;
           phraseDiv.style.display = '';
@@ -1154,7 +1152,7 @@ function speakQuestion(txt){
   if(btn){ btn.disabled = true; btn.style.opacity = '0.4'; }
   setStat('idle', '\uD83D\uDD0A Question speaking\u2026');
 
-  if(,window.speechSynthesis){ enableBtn(); return; }
+  if(!window.speechSynthesis){ enableBtn(); return; }
   window.speechSynthesis.cancel();
 
   const u = new SpeechSynthesisUtterance(txt);
@@ -1162,7 +1160,7 @@ function speakQuestion(txt){
 
   // Fallback: enable mic after 8 seconds max
   const fallback = setTimeout(enableBtn, 8000);
-  u.onend   = () => { clearTimeout(fallback); utTimeout(enableBtn, 200); };
+  u.onend   = () => { clearTimeout(fallback); setTimeout(enableBtn, 200); };
   u.onerror = () => { clearTimeout(fallback); enableBtn(); };
 
   window.speechSynthesis.speak(u);
@@ -1403,5 +1401,6 @@ window.onload = async function(){
   }
 };
 </script>
-</body>
-</html>
+
+
+</body></html>
