@@ -412,27 +412,58 @@ const KEYWORD_FOLLOWUP = {
 // INDIAN ENGLISH CUSTOM RULES
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 const INDIAN_RULES = [
-  {re:/\bmyself\s+(is|am|are|was)\b/gi,     msg:'Say "My name is" \u2014 not "Myself is".',            fix:'My name is'},
-  {re:/\bhimself\s+(is|am)\b/gi,            msg:'Say "His name is" \u2014 not "Himself is".',           fix:'His name is'},
-  {re:/\bherself\s+(is|am)\b/gi,            msg:'Say "Her name is" \u2014 not "Herself is".',           fix:'Her name is'},
+  // ---- Identity introduction ----
+  {re:/\bmyself\s+(is|am|are|was)\b/gi,     msg:'Say "My name is" — not "Myself is".',            fix:'My name is'},
+  {re:/\bhimself\s+(is|am)\b/gi,            msg:'Say "His name is" — not "Himself is".',           fix:'His name is'},
+  {re:/\bherself\s+(is|am)\b/gi,            msg:'Say "Her name is" — not "Herself is".',           fix:'Her name is'},
+  {re:/\bwhat is your good name\b/gi,       msg:'Just say "What is your name?" — "good name" is not needed.',fix:'What is your name?'},
+  // ---- Stative verbs in progressive tense ----
+  {re:/\b(is|am|are|was|were)\s+knowing\b/gi,    msg:'Stative verb: say "knows" or "know" — not "is knowing".',    fix:'knows'},
+  {re:/\b(is|am|are|was|were)\s+wanting\b/gi,    msg:'Stative verb: say "wants" or "want" — not "is wanting".',    fix:'wants'},
+  {re:/\b(is|am|are|was|were)\s+liking\b/gi,     msg:'Stative verb: say "likes" or "like" — not "is liking".',     fix:'likes'},
+  {re:/\b(is|am|are|was|were)\s+understanding\b/gi,msg:'Say "understands" or "understand" — not "is understanding".',fix:'understands'},
+  {re:/\b(is|am|are|was|were)\s+needing\b/gi,    msg:'Say "needs" or "need" — not "is needing".',                  fix:'needs'},
+  {re:/\b(is|am|are|was|were)\s+believing\b/gi,  msg:'Say "believes" or "believe" — not "is believing".',          fix:'believes'},
+  {re:/\b(is|am|are|was|were)\s+remembering\b/gi,msg:'Say "remembers" or "remember" — not "is remembering".',      fix:'remembers'},
+  {re:/\b(is|am|are|was|were)\s+forgetting\b/gi, msg:'Say "forgets" or "forget" — not "is forgetting".',           fix:'forgets'},
+  {re:/\b(is|am|are|was|were)\s+hating\b/gi,     msg:'Say "hates" or "hate" — not "is hating".',                  fix:'hates'},
+  {re:/\b(is|am|are|was|were)\s+loving\b/gi,     msg:'Say "loves" or "love" — not "is loving".',                  fix:'loves'},
+  // ---- "Having" misused for states ----
+  {re:/\b(is|am|are|was|were)\s+(not\s+)?having\s+(any\s+)?(idea|clue)\b/gi, msg:'Say "have no idea" or "don't have any idea" — not "am not having any idea".',fix:'have no idea'},
+  {re:/\b(is|am|are|was|were)\s+having\s+(a\s+)?doubt\b/gi, msg:'Say "have a doubt" or "I'm not sure" — not "having a doubt".',fix:'have a doubt'},
+  {re:/\b(is|am|are|was|were)\s+having\s+(a\s+)?problem\b/gi,msg:'Say "have a problem" — not "having a problem".',fix:'have a problem'},
+  {re:/\b(is|am|are|was|were)\s+having\s+(a\s+)?fever\b/gi, msg:'Say "have a fever" — not "having a fever".',fix:'have a fever'},
+  {re:/\b(is|am|are|was|were)\s+having\s+tension\b/gi,       msg:'Say "feel stressed" or "am stressed" — not "having tension".',fix:'feel stressed'},
+  {re:/\b(is|am|are|was|were)\s+having\s+(hunger|thirst)\b/gi,msg:'Say "am hungry" / "am thirsty" — not "having hunger".',fix:'am hungry'},
+  // ---- Preposition errors ----
+  {re:/\bcope\s+up\s+with\b/gi,             msg:'Say "cope with" — not "cope up with".',           fix:'cope with'},
+  {re:/\bdiscuss\s+about\b/gi,              msg:'Say "discuss X" — not "discuss about X".',        fix:'discuss'},
+  {re:/\bwent\s+to\s+abroad\b/gi,          msg:'Say "went abroad" — no "to" before abroad.',      fix:'went abroad'},
+  {re:/\breturn\s+back\b/gi,                msg:'"Return" already means coming back. Just say "return".',fix:'return'},
+  {re:/\brevert\s+back\b/gi,                msg:'"Revert" already means going back. Just say "revert".',fix:'revert'},
+  // ---- "Since" with duration ----
+  {re:/\bsince\s+(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\s+(years?|months?|days?|weeks?|hours?)\b/gi,
+      msg:'Use "for" with a duration. Say "for three years" — not "since three years".',fix:'for'},
+  // ---- Emphasis "only" (Indian English) ----
+  {re:/\b(yesterday|just now|now|here|there|then|today)\s+only\b/gi,
+      msg:'"Only" used as emphasis is Indian English. Remove it or rephrase.',fix:''},
+  // ---- Common Indian English expressions ----
   {re:/\bdo the needful\b/gi,               msg:'"Do the needful" is Indian English. Say "do what is necessary".',fix:'do what is necessary'},
+  {re:/\bkindly do the needful\b/gi,        msg:'Say "please do what is required" instead.',fix:'please do what is required'},
   {re:/\bprepone\b/gi,                      msg:'"Prepone" is not standard. Say "reschedule to an earlier time".',fix:'reschedule to an earlier time'},
-  {re:/\bcousin (brother|sister)\b/gi,      msg:'Just say "cousin" \u2014 do not add brother or sister.',fix:'cousin'},
-  {re:/\bi (am|was) having (hunger|thirst)\b/gi,msg:'Say "I am hungry" / "I am thirsty" \u2014 not "having hunger".',fix:''},
-  {re:/\brevert back\b/gi,                  msg:'"Revert" already means going back. Just say "revert".',fix:'revert'},
-  {re:/\btoday morning\b/gi,                msg:'Say "this morning" \u2014 not "today morning".',       fix:'this morning'},
-  {re:/\btoday evening\b/gi,                msg:'Say "this evening" \u2014 not "today evening".',       fix:'this evening'},
-  {re:/\btoday night\b/gi,                  msg:'Say "tonight" or "last night" \u2014 not "today night".',fix:'tonight'},
-  {re:/\bpassed out (from|of)\b/gi,         msg:'Say "graduated from" \u2014 not "passed out from".',   fix:'graduated from'},
-  {re:/\bwhat is your good name\b/gi,       msg:'Just say "What is your name?" \u2014 "good name" is not needed.',fix:'What is your name?'},
-  {re:/\bI am (very )?much interested\b/gi, msg:'Say "I am very interested" \u2014 not "much interested".',fix:'I am very interested'},
-  {re:/\bkindly do the needful\b/gi,        msg:'Say "please do what is required" instead.',       fix:'please do what is required'},
-  {re:/\bstay back\b/gi,                    msg:'Say "stay" or "remain" \u2014 not "stay back".',       fix:'stay'},
-  {re:/\bI will revert\b/gi,                msg:'"Revert" is misused here. Say "I will get back to you".',fix:'I will get back to you'},
-  {re:/\bair dash\b/gi,                     msg:'Say "fly" or "travel by air" \u2014 not "air dash".',  fix:'travel by air'},
-  {re:/\bI have done (my )?schooling\b/gi,  msg:'Say "I completed my schooling" \u2014 not "done schooling".',fix:'I completed my schooling'},
-  {re:/\bwent to abroad\b/gi,               msg:'Say "went abroad" \u2014 no "to" before abroad.',      fix:'went abroad'},
-];
+  {re:/\bout of station\b/gi,               msg:'"Out of station" is Indian English. Say "out of town" or "away".',fix:'out of town'},
+  {re:/\bcousin (brother|sister)\b/gi,      msg:'Just say "cousin" — do not add brother or sister.',fix:'cousin'},
+  {re:/\bI am (very )?much interested\b/gi, msg:'Say "I am very interested" — not "much interested".',fix:'I am very interested'},
+  {re:/\bstay back\b/gi,                    msg:'Say "stay" or "remain" — not "stay back".',       fix:'stay'},
+  {re:/\bI will revert\b/gi,               msg:'"Revert" is misused here. Say "I will get back to you".',fix:'I will get back to you'},
+  {re:/\bair dash\b/gi,                     msg:'Say "fly" or "travel by air" — not "air dash".',  fix:'travel by air'},
+  {re:/\bI have done (my )?schooling\b/gi,  msg:'Say "I completed my schooling" — not "done schooling".',fix:'I completed my schooling'},
+  {re:/\bpassed out (from|of)\b/gi,         msg:'Say "graduated from" — not "passed out from".',   fix:'graduated from'},
+  // ---- Time expressions ----
+  {re:/\btoday morning\b/gi,                msg:'Say "this morning" — not "today morning".',       fix:'this morning'},
+  {re:/\btoday evening\b/gi,                msg:'Say "this evening" — not "today evening".',       fix:'this evening'},
+  {re:/\btoday night\b/gi,                  msg:'Say "tonight" or "last night" — not "today night".',fix:'tonight'},
+]
 
 // \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
 // STATE
